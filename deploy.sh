@@ -18,4 +18,5 @@ git add -A
 git commit -m "deploy at ${time}"
 
 # 部署在 https://<USERNAME>.github.io/<REPO>
-git push -f git@github.com:gaoxiaosi/canvas-magic.git gh-pages
+# git push -f git@github.com:gaoxiaosi/canvas-magic.git gh-pages
+git push origin gh-pages
