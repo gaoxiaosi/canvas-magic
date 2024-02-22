@@ -13,7 +13,7 @@ time=$(date "+%Y-%m-%d %H:%M")
 
 # 初次部署的时候需要这两条命令
 # git init
-# git checkout -b main
+git checkout main
 git add -A
 git commit -m "deploy at ${time}"
 
