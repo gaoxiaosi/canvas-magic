@@ -1,3 +1,3 @@
 ### Canvas有趣的小案例
-- [x] `gobang`：五子棋，演示地址：[简单版](https://gaoxiaosi.github.io/canvas-magic/gobang/alpha/index.html)，[标准版](https://gaoxiaosi.github.io/canvas-magic/gobang/standard/index.html)，[测试版](https://gaoxiaosi.github.io/canvas-magic/gobang/beta/index.html)
-- [x] `game2048`：2048，演示地址：[简单版](https://gaoxiaosi.github.io/canvas-magic/game2048/alpha/index.html)，[标准版](https://gaoxiaosi.github.io/canvas-magic/game2048/standard/index.html)，[测试版](https://gaoxiaosi.github.io/canvas-magic/game2048/beta/index.html)
+- [x] `gobang`：五子棋，演示地址：[简单版](https://gaoxiaosi.github.io/canvas-magic/alpha/gobang/index.html)，[标准版](https://gaoxiaosi.github.io/canvas-magic/standard/gobang/index.html)，[测试版](https://gaoxiaosi.github.io/canvas-magic/beta/gobang/index.html)
+- [x] `game2048`：2048，演示地址：[简单版](https://gaoxiaosi.github.io/canvas-magic/alpha/game2048/index.html)，[标准版](https://gaoxiaosi.github.io/canvas-magic/standard/game2048/index.html)，[测试版](https://gaoxiaosi.github.io/canvas-magic/beta/game2048/index.html)
