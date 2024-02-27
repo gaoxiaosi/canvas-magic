@@ -6,15 +6,23 @@
   "license": "MIT",
   "scripts": {
     "dev": "node ./bin/cli.js",
-    "build": "rm -rf dist && parcel build standard/**/index.html --no-source-maps --no-cache --public-url magic-canvas",
-    "deploy": "sh deploy.sh"
+    "start": "parcel",
+    "build": "rm -rf dist && parcel build standard/**/index.html alpha/**/index.html beta/**/index.html --no-source-maps --no-cache --public-url https://gaoxiaosi.github.io/canvas-magic/",
+    "deploy": "gh-pages -d dist"
   },
-  "keywords": ["canvas", "javaScript", "ES6"],
+  "keywords": [
+    "canvas",
+    "javaScript",
+    "ES6",
+    "gobang",
+    "2048"
+  ],
   "devDependencies": {
     "chalk": "^4.1.2",
     "cli-table3": "^0.6.3",
     "commander": "^11.0.0",
     "fs-extra": "^11.1.1",
+    "gh-pages": "^6.1.1",
     "live-server": "^1.2.2",
     "parcel": "^2.10.3"
   }
