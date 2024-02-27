@@ -24,9 +24,9 @@ class Mask {
     primaryColor = '#F56C6C',
     maskColor = 'rgba(128, 128, 128, 0.6)',
     btnTextColor = '#FFFFFF',
-    textTitle = 'Game Over',
-    successBtnText = 'Try Again',
-    cancelBtnText = 'Cancel'
+    textTitle = '游戏结束',
+    successBtnText = '重新开始',
+    cancelBtnText = '取消'
   }) {
     Object.assign(this, {
       onSuccess, // 点击“成功”按钮，关闭模态窗，执行回调
