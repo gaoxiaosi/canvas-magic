@@ -4,6 +4,7 @@ const W = 125, // 格子宽度
   COLUMNS = 4,
   SIDE_W = W * COLUMNS + SPACE * (COLUMNS + 1), // 宽
   SIDE_H = W * ROWS + SPACE * (ROWS + 1), // 高
+  BG_COLOR = '#F9F7EB', // 页面背景颜色
   VALUES = ['2', '4', '8', '16', '32', '64', '128', '256', '512', '1024', '2048'],
   VALUE_COLORS = ['#EEE4DA', '#EDE0C8', '#EDA166', '#F08151', '#F1654D', '#F1462E', '#E8C65F', '#E8C34F', '#E8BE40', '#E8BB31', '#E8B724'],
   FONT_SIZE = [70, 70, 70, 60, 60, 60, 50, 50, 50, 50, 40],
@@ -17,6 +18,8 @@ canvas.height = SIDE_H;
 canvas.style.cssText = 'position: absolute; inset: 0; margin: auto;';
 document.body.appendChild(canvas);
 
+document.body.style.backgroundColor = BG_COLOR;
+
 let data = Array.from({ length: COLUMNS }, () => Array(ROWS).fill(-1)), // 格子数据，空的为-1
   maxVal = 0; // 当前最大值（判断是否达到2048）
 
@@ -26,24 +29,13 @@ document.addEventListener('keydown', e => {
 })
 
 const execute = (cb, oldData) => {
-  let newData = cb(oldData);
+  let newData = cb(JSON.parse(JSON.stringify(oldData)));
   if (newData.toString() === oldData.toString()) return
   data = newData;
   update();
 }
 
-// 移动时数字的移动和合并
-// const move = list => {
-//   let result = list.filter(item => item !== -1);
-//   for (let i = result.length - 1; i > 0; i--) {
-//     if (result[i] === result[i - 1]) {
-//       maxVal = Math.max(maxVal, ++result[i]);
-//       result.splice(--i, 1); 
-//     }
-//   }
-//   return new Array(list.length - result.length).fill(-1).concat(result)
-// }
-
+// （单行）移动时算法，如[-1,2,1,1] → [-1,-1,2,2]
 const move = list => {
   let temp = [], isMerge = false;
   for (let i = list.length - 1; i >= 0; i--) {
@@ -56,28 +48,8 @@ const move = list => {
       isMerge = true
     }
   }
-  return new Array(list.length - result.length).fill(-1).concat(result)
+  return new Array(list.length - temp.length).fill(-1).concat(temp)
 }
-
-// const convert2 = arr => {
-//   let newArr = []
-//   for (let y = 0; y < arr[0].length; y++) {
-//     newArr[y] = []
-//     for (let x = 0; x < arr.length; x++) {
-//       newArr[y][x] = arr[x][y]
-//     }
-//   }
-//   return newArr
-// }
-
-// let arr = [
-//   [1, 2, 3],
-//   [4, 5, 6],
-//   [7, 8, 9]
-// ]
-
-// console.log(convert2(arr))
-// console.log(convert2(arr))
 
 // 二维数组行列转换
 const convert = arr => arr[0].map((_, colIndex) => arr.map(row => row[colIndex]))
@@ -98,7 +70,7 @@ const keydownEvent = {
 const update = () => {
   if (isWin()) return alert('你赢了')
   let {x, y} = getRandomFreePos(data);
-  data[x][y] = 0;
+  data[x][y] = Math.random() < 0.5 ? 0 : 1;
   ctx.clearRect(0, 0, SIDE_W, SIDE_H);
   drawBoard();
   drawAllBlock(data);
@@ -107,35 +79,28 @@ const update = () => {
 
 const isWin = () => maxVal === VALUES.length - 1
 
-const isLose = () => {
-  for (let i = 0; i < COLUMNS; i++) {
-    for (let j = 0; j < ROWS; j++) {
-      // 游戏未结束条件：1.本身是空值 2.下方没有相同值 3.右侧没有相同值
-      if (data[i][j] === -1 || (j < ROWS - 1 && data[i][j] === data[i][j + 1]) || (i < COLUMNS - 1 && data[i][j] === data[i + 1][j])) return false
-    }
-  }
-  return true
-}
+const isLose = () => !data.some((col, x) => col.some((v, y) => v === -1 || v === col[y + 1] || v === data[x + 1]?.[y]))
 
 const start = () => {
   for (let i = 0; i < 2; i++) {
     let {x, y} = getRandomFreePos(data);
-    data[x][y] = 0;
+    data[x][y] = Math.random() < 0.5 ? 0 : 1;
   }
   drawBoard();
   drawAllBlock(data);
 }
 
-const drawDataBlock = (x, y, valIndex) => {
+const drawDataBlock = (x, y, valIndex, w = W) => {
   const [dataVal, fillColor, fontSize] = [VALUES, VALUE_COLORS, FONT_SIZE].map(v => v[valIndex]);
   drawBlock(x, y, fillColor);
   ctx.font = `${fontSize}px serif`;
   ctx.fillStyle = valIndex < 2 ? FONT_GRAY : FONT_WHITE; // 值为2、4时，字体灰色；其他值字体都是白色
-  const metrics = ctx.measureText(dataVal);
-  const width = metrics.actualBoundingBoxLeft + metrics.actualBoundingBoxRight;
-  const height = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
-  ctx.fillText(dataVal, x * (SPACE + W) + SPACE + (W - width) / 2, y * (SPACE + W) + SPACE + height + (W - height) / 2);
+  ctx.textBaseline = 'middle';
+  ctx.textAlign = 'center';
+  ctx.fillText(dataVal, trans(x) + w / 2, trans(y) + w / 2);
 }
+
+const trans = pos => pos * (SPACE + W) + SPACE
 
 // 绘制格子（无论是否有值，打底）
 const drawBaseBlock = data => data.forEach((row, x) => row.forEach((_, y) => drawBlock(x, y)))
@@ -154,7 +119,7 @@ const drawBoard = () => {
 
 const drawBlock = (x, y, fillColor = '#C2B4A5') => {
   ctx.fillStyle = fillColor;
-  ctx.fillRect(x * (SPACE + W) + SPACE, y * (SPACE + W) + SPACE, W, W);
+  ctx.fillRect(trans(x), trans(y), W, W);
 }
 
 // 随机获取空闲位置
