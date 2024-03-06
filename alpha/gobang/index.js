@@ -53,7 +53,7 @@ const drawPiece = (x, y, isBlack) => {
   ctx.fill();
 }
 
-// 判断游戏胜负，(x, y)当前下棋坐标，role：黑1白2，chess：棋盘数据，二维数组，黑1白2空位0
+// 判断游戏胜负，(x, y)当前下棋坐标，role：黑1白2，chess：棋盘数据，二维数组，黑1白2空位-1
 const isWin = (x, y, role, chess) => {
   for (let [dx, dy] of [[1, 0], [0, 1], [1, 1], [1, -1]]) {
     let count = 1, i = 0, j = 0;

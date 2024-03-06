@@ -1,6 +1,6 @@
 import Mask from "../../plugin/canvas-mask.js";
 
-let SIZE = 5, // 棋盘15*15=225个点
+let SIZE = 15, // 棋盘15*15=225个点
   W = Math.min(window.innerWidth, window.innerHeight) / (SIZE + 3) , // 棋盘格子大小
   SL = W * (SIZE + 1), // 边长 = 棋盘宽高
   BOARD_BG_COLOR = '#E4A751', // 棋盘背景颜色
@@ -13,18 +13,18 @@ let SIZE = 5, // 棋盘15*15=225个点
   BLACK_CHESS_TOP_COLOR = '#707070', // 黑棋顶灰，顶灰过渡到底黑+阴影=立体
   WHITE_CHESS_COLOR = '#D5D8DC',  // 白棋底灰
   WHITE_CHESS_TOP_COLOR = '#FFFFFF', // 白棋顶白，顶白过渡到底灰+阴影=立体
-  SHADOW_COLOR = 'rgba(0, 0, 0, 0.5)', // 阴影颜色
+  PIECE_SHADOW_COLOR = 'rgba(0, 0, 0, 0.5)', // 棋子的阴影
+  BOARD_SHADOW_COLOR = '#888888', // 棋盘的阴影
   BLACK_ROLE = 1, // 黑棋
   WHITE_ROLE = 2, // 白棋
+  EMPTY_ROLE = -1, // 空
   TOTAL_STEPS = SIZE * SIZE; // 总步数
 
 /** @type {HTMLCanvasElement} */
 let canvas = document.createElement('canvas'), ctx = canvas.getContext('2d');
 canvas.width = canvas.height = SL; // 棋盘宽高 = 边长
-canvas.style.cssText = `position: absolute; inset: 0; margin: auto; box-shadow: 5px 5px 20px #888888; cursor: pointer;`;
+canvas.style.cssText = `position: absolute; inset: 0; margin: auto; box-shadow: 5px 5px 20px ${BOARD_SHADOW_COLOR}; cursor: pointer;`;
 document.body.appendChild(canvas);
-
-// document.body.style.backgroundColor = 'pink'
 
 let regretBtn = document.createElement('button');
 regretBtn.innerText = '悔棋';
@@ -32,7 +32,7 @@ regretBtn.innerText = '悔棋';
 // document.body.appendChild(regretBtn);
 
 // 记录棋盘的黑白棋，15*15的二维数组，初始值：0，黑棋：1，白棋：2
-let chess = Array.from({ length: SIZE }, () => Array(SIZE).fill(0)),
+let chess = Array.from({ length: SIZE }, () => Array(SIZE).fill(EMPTY_ROLE)),
   isBlack = true, // 黑棋先下
   moveSteps = 0, // 下棋步数
   steps = [];
@@ -42,19 +42,17 @@ regretBtn.onclick = e => {
   isBlack = !isBlack;
   moveSteps--;
   let {x, y} = steps.pop();
-  chess[x][y] = 0;
+  chess[x][y] = EMPTY_ROLE;
   clearPiece(x, y);
   if (steps.length === 0) return;
-  let {x: lastX, y: lastY} = steps.at(-1)
-  drawRedPoint(lastX, lastY);
-  // let lastStep = steps.at(-1)
-  // drawRedPoint(lastStep.x, lastStep.y);
+  let lastStep = steps.at(-1);
+  drawRedPoint(lastStep.x, lastStep.y);
 }
 
 // 监听棋盘点击位置
 canvas.onclick = e => {
   let [x, y] = [e.offsetX, e.offsetY].map(d => Math.round(d / W) - 1);
-  if (chess[x]?.[y] !== 0) return;
+  if (chess[x]?.[y] !== EMPTY_ROLE) return;
   if (steps.length > 0) {
     let {x, y, isBlack} = steps.at(-1)
     clearPiece(x, y);
@@ -91,14 +89,14 @@ const drawLine = (x1, y1, x2, y2, lineWidth = LINE_WIDTH, lineColor = LINE_COLOR
 // 绘制棋子
 const drawPiece = (x, y, isBlack) => {
   ctx.save();
-  ctx.shadowColor = SHADOW_COLOR;
-  ctx.shadowOffsetX = ctx.shadowOffsetY = W * 0.06;
-  ctx.shadowBlur = W * 0.04;
   ctx.beginPath();
   x = x * W + W;
   y = y * W + W;
   ctx.arc(x, y, W * 0.4, 0, 2 * Math.PI);
   ctx.closePath();
+  ctx.shadowColor = PIECE_SHADOW_COLOR;
+  ctx.shadowOffsetX = ctx.shadowOffsetY = W * 0.06;
+  ctx.shadowBlur = W * 0.04;
   const gradient = ctx.createRadialGradient(x, y, 0, x, y, W * 0.4);
   gradient.addColorStop(0, isBlack ? BLACK_CHESS_TOP_COLOR : WHITE_CHESS_TOP_COLOR);
   gradient.addColorStop(1, isBlack ? BLACK_CHESS_COLOR : WHITE_CHESS_COLOR);
@@ -126,7 +124,7 @@ const drawRedPoint = (x, y, r = 0.05 * W) => {
 const restart = () => {
   ctx.clearRect(0, 0, SL, SL);
   drawBoard();
-  chess = Array.from({ length: SIZE }, () => new Array(SIZE).fill(0))
+  chess = Array.from({ length: SIZE }, () => new Array(SIZE).fill(EMPTY_ROLE))
   isBlack = true;
   moveSteps = 0;
   steps = []
@@ -163,7 +161,6 @@ const handleResize = () => {
   W = Math.min(window.innerWidth, window.innerHeight) / (SIZE + 3);
   SL = W * (SIZE + 1);
   canvas.width = canvas.height = SL; // 棋盘宽高 = 边长
-  // canvas.style.cssText = `display: block;margin: ${(window.innerHeight - SL) / 2}px auto; box-shadow: 10px 10px 50px #888; cursor: pointer;`;
   drawBoard();
   steps.forEach(({x, y, isBlack}) => {
     drawPiece(x, y, isBlack)
