@@ -26,7 +26,7 @@ drawButtons(){let{canvas:t,ctx:e,H:l,W:i,btnTextColor:n,primaryColor:a,onSuccess
 e.font=`${f-2*u}px Arial`,e.textBaseline="top",e.textAlign="left";let p=e.measureText(d).width+2*u,g=e.measureText(h).width+2*u,m=(l+s+c)/2-f/2,T=(i-p-g-x)/2,C=T+p+x,v=[T,m,T+p,m+f],w=[C,m,C+g,m+f];// 取消按钮所占矩形范围（左上XY，右下XY）
 // 绘制成功和取消按钮
 e.fillStyle=a,e.fillRect(T,m,p,f),e.fillRect(C,m,g,f),e.fillStyle=n,e.fillText(d,T+u,m+u),e.fillText(h,C+u,m+u);// 判断坐标是否在矩形（按钮）范围之内
-let b=(t,e,[l,i,n,a])=>t>=l&&t<=n&&e>=i&&e<=a;// 监听点击事件，若点击到成功按钮，执行成功回调；若点击到取消按钮，执行取消回调。（只要点击到按钮都会关闭模态窗）
+let b=(t,e,[l,i,n,a])=>t>=l&&t<=i&&e>=n&&e<=a;// 监听点击事件，若点击到成功按钮，执行成功回调；若点击到取消按钮，执行取消回调。（只要点击到按钮都会关闭模态窗）
 t.onclick=t=>[o,r][[v,w].findIndex(e=>b(t.offsetX,t.offsetY,e)&&(this.close(),!0))]?.()}// 关闭模态窗（移除DOM节点）
 close(){this.ctx.clearRect(0,0,this.W,this.H),this.canvas.onclick=null,document.getElementById(this.canvas.id).remove()}}});var n=i("8PRdk");let a=Math.min(window.innerWidth,window.innerHeight)/18,o=16*a,r="#E4A751",s=1,c="#000000",d=document.createElement("canvas"),h=d.getContext("2d");// 总步数
 d.width=d.height=o,d.style.cssText="position: absolute; inset: 0; margin: auto;cursor: pointer;",document.body.appendChild(d);// 记录棋盘的黑白棋，15*15的二维数组，初始值：0，黑棋：1，白棋：2
