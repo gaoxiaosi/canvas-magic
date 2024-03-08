@@ -1,5 +1,5 @@
 import dataList from './data.js'                 // 所有项目数据
-import logo from './logo.png'                    // 网站Logo
+import logo from './assets/logo.png'             // 网站Logo
 import alphaIcon from './assets/alpha.png'       // 简单版icon
 import standardIcon from './assets/standard.png' // 标准版icon
 import betaIcon from './assets/beta.png'         // 测试版icon
