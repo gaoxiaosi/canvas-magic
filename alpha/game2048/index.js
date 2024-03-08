@@ -100,6 +100,7 @@ const drawDataBlock = (x, y, valIndex, w = W) => {
   ctx.fillText(dataVal, trans(x) + w / 2, trans(y) + w / 2);
 }
 
+// 将x或y转换成真正的位置（在Canvas中的位置），用于绘制
 const trans = pos => pos * (SPACE + W) + SPACE
 
 // 绘制格子（无论是否有值，打底）

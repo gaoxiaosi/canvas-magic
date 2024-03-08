@@ -1,14 +1,15 @@
-// import img1 from './1.png'
-// import img2 from './2.png'
-// import img3 from './3.png'
-// import img4 from './4.png'
-// import img5 from './5.png'
+import img1 from './1.png'
+import img2 from './2.png'
+import img3 from './3.png'
+import img4 from './4.png'
+import img5 from './5.png'
+
 import Mask from "../../plugin/canvas-mask.js";
 
-const W = 180, // 格子宽度
-  SPACE = 25, // 格子间隔
-  ROWS = 5,
-  COLUMNS = 5,
+const W = 125, // 格子宽度
+  SPACE = 20, // 格子间隔
+  ROWS = 4,
+  COLUMNS = 4,
   SIDE_W = W * COLUMNS + SPACE * (COLUMNS + 1), // 宽
   SIDE_H = W * ROWS + SPACE * (ROWS + 1), // 高
   BG_COLOR = '#F9F7EB', // 页面背景颜色
@@ -17,8 +18,8 @@ const W = 180, // 格子宽度
   RADIUS_SIZE = 6, // 默认圆角大小
   MASK_PRIMARY_COLOR = '#EDA166',
   MASK_COLOR = 'rgba(143, 122, 102, 0.5)',
-  // VALUES = [img1, img2, img3, img4, img5], // 打包时通过import引入图片
-  VALUES = ['./1.png', './2.png', './3.png', './4.png', './5.png'], // 本地测试
+  VALUES = [img1, img2, img3, img4, img5], // 打包时通过import引入图片
+  // VALUES = ['./1.png', './2.png', './3.png', './4.png', './5.png'], // 本地测试
   // VALUES = [ // 线上图片地址（可在浏览器中设置“不要缓存”和“限制网速”进行调试）
   //   'https://bideyuanli.com/wp-content/themes/2048/zhan/1.png',
   //   'https://bideyuanli.com/wp-content/themes/2048/zhan/3.png',
@@ -232,32 +233,34 @@ const start = async () => {
       data.forEach((col, x) => col.forEach((v, y) => v === index & drawDataBlock(x, y, v)))
     }
   })
-  // let scaleGroup = [];
-  // for (let i = 0; i < 2; i++) {
-  //   let {x, y} = getRandomFreePos(data);
-  //   let val = Math.random() < 0.5 ? 0 : 1;
-  //   data[x][y] = val;
-  //   scaleGroup.push({x, y, val});
-  // }
-  // await scaleAnimate(scaleGroup, [])
-  let presets = [[0, 1], [0, 2], [1, 0], [1, 3], [2, 1], [2, 4], [3, 0], [3, 3], [4, 2], [4, 1]]
-  presets.forEach(([x, y]) => {
-    data[x][y] = Math.floor(Math.random() * (VALUES.length - 1))
-    scaleGroup.push({ x, y, val: data[x][y] })
-  })
+  let scaleGroup = [];
+  for (let i = 0; i < 2; i++) {
+    let {x, y} = getRandomFreePos(data);
+    let val = Math.random() < 0.5 ? 0 : 1;
+    data[x][y] = val;
+    scaleGroup.push({x, y, val});
+  }
   await scaleAnimate(scaleGroup, [])
+  // let presets = [[0, 1], [0, 2], [1, 0], [1, 3], [2, 1], [2, 4], [3, 0], [3, 3], [4, 2], [4, 1]]
+  // presets.forEach(([x, y]) => {
+  //   data[x][y] = Math.floor(Math.random() * (VALUES.length - 1))
+  //   scaleGroup.push({ x, y, val: data[x][y] })
+  // })
+  // await scaleAnimate(scaleGroup, [])
   drawBoard();
   drawAllBlock(data);
 }
 
 const drawDataBlock = (x, y, valIndex, w = W) => {
   x = x * (SPACE + W) + SPACE, y = y * (SPACE + W) + SPACE;
-  roundRect(x, y, w, w, 6, VALUE_COLORS[valIndex]);
   if (isLoadeds[valIndex]) {
     ctx.save();
+    roundRect(x, y, w, w, 6, BLOCK_COLOR);
     ctx.clip();
     ctx.drawImage(images[valIndex], x, y, w, w);
     ctx.restore();
+  } else {
+    roundRect(x, y, w, w, 6, VALUE_COLORS[valIndex]);
   }
 }
 
