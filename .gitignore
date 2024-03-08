@@ -5,3 +5,10 @@ dist
 test
 test.html
 test.js
+Thumbs.db
+.vscode/
+.idea/
+*.iml
+*.log
+.env
+.env.local
