@@ -47,13 +47,14 @@ class Mask {
     })
 
     // 和原canvas大小位置都一样的新canvas
-    const { top, left } = canvas.getBoundingClientRect();
+    // const { top, left } = canvas.getBoundingClientRect();
     this.canvas = document.createElement('canvas');
     this.ctx = this.canvas.getContext('2d');
     this.canvas.id = `mask-canvas-${new Date().getTime()}`;
     this.canvas.width = this.W;
     this.canvas.height = this.H;
-    this.canvas.style.cssText = `position: absolute; top: ${top}px; left: ${left}px; cursor: pointer;`;
+    // this.canvas.style.cssText = `position: absolute; top: ${top}px; left: ${left}px; cursor: pointer;`;
+    this.canvas.style.cssText = `position: absolute; inset: 0; margin: auto; cursor: pointer;`;
     // 遮罩层Canvas和原Canvas为同级关系，所以添加到原Canvas后面，而不是document.body.appendChild(this.canvas)
     canvas.parentNode.appendChild(this.canvas)
 
@@ -96,8 +97,8 @@ class Mask {
       btnY = (H + titleH + titleBtnSpacing) / 2 - btnH / 2, // 按钮左上角纵坐标
       successBtnX = (W - successBtnW - cancelBtnW - btnSpacing) / 2, // 成功按钮左上角横坐标
       cancelBtnX = successBtnX + successBtnW + btnSpacing, // 取消按钮左上角横坐标
-      successBtnRange = [successBtnX, btnY, successBtnX + successBtnW, btnY + btnH], // 成功按钮所占矩形范围（左上XY，右下XY）
-      cancelBtnRange = [cancelBtnX, btnY, cancelBtnX + cancelBtnW, btnY + btnH]; // 取消按钮所占矩形范围（左上XY，右下XY）
+      successBtnRange = [successBtnX, successBtnX + successBtnW, btnY, btnY + btnH], // 成功按钮所占矩形范围（左右X的范围，上下Y的范围）
+      cancelBtnRange = [cancelBtnX, cancelBtnX + cancelBtnW, btnY, btnY + btnH]; // 取消按钮所占矩形范围（左右X的范围，上下Y的范围）
 
     // 绘制成功和取消按钮
     ctx.fillStyle = primaryColor;
@@ -108,7 +109,7 @@ class Mask {
     ctx.fillText(cancelBtnText, cancelBtnX + btnPadding, btnY + btnPadding);
 
     // 判断坐标是否在矩形（按钮）范围之内
-    const isPointInRange = (x, y, [left, top, right, bottom]) => x >= left && x <= right && y >= top && y <= bottom
+    const isPointInRange = (x, y, [left, right, top, bottom]) => x >= left && x <= right && y >= top && y <= bottom
 
     // 监听点击事件，若点击到成功按钮，执行成功回调；若点击到取消按钮，执行取消回调。（只要点击到按钮都会关闭模态窗）
     canvas.onclick = e => [onSuccess, onCancel][[successBtnRange, cancelBtnRange].findIndex(range => isPointInRange(e.offsetX, e.offsetY, range) && (this.close(), true))]?.()
