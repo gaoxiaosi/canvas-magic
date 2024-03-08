@@ -9,19 +9,4 @@ program.command('create')
     require('../lib/create')(filePath, name)
   })
 
-program.command('open')
-  .alias('o')
-  .description('启动项目')
-  .arguments('projectName')
-  .action((projectName) => {
-    require('../lib/open')(projectName)
-  })
-
-program.command('list')
-  .alias('l')
-  .description('查看所有项目')
-  .action(() => {
-    require('../lib/list')()
-  })
-
 program.parse(process.argv);
