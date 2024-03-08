@@ -23,7 +23,7 @@ t.parentNode.appendChild(this.canvas),this.drawMask(),this.drawTitle(),this.draw
 drawMask(){let{ctx:t,H:e,W:l,maskColor:i}=this;t.fillStyle=i,t.fillRect(0,0,l,e)}// 绘制标题
 drawTitle(){let{ctx:t,H:e,W:l,btnH:i,textTitle:n,titleH:a,titleBtnSpacing:o,primaryColor:r}=this;t.font=`${a}px Arial`,t.textAlign="center",t.textBaseline="top",t.fillStyle=r,t.fillText(n,l/2,(e-a-o-i)/2)}// 绘制按钮（并绑定点击事件）
 drawButtons(){let{canvas:t,ctx:e,H:l,W:i,btnTextColor:n,primaryColor:a,onSuccess:o,onCancel:r,titleH:s,titleBtnSpacing:c,successBtnText:d,cancelBtnText:h,btnH:f,btnPadding:u,btnSpacing:x}=this;// 设置按钮样式（需提前设置字体大小，这样通过measureText方法计算文本内容的宽度）
-e.font=`${f-2*u}px Arial`,e.textBaseline="top",e.textAlign="left";let p=e.measureText(d).width+2*u,g=e.measureText(h).width+2*u,m=(l+s+c)/2-f/2,T=(i-p-g-x)/2,C=T+p+x,v=[T,m,T+p,m+f],w=[C,m,C+g,m+f];// 取消按钮所占矩形范围（左上XY，右下XY）
+e.font=`${f-2*u}px Arial`,e.textBaseline="top",e.textAlign="left";let p=e.measureText(d).width+2*u,g=e.measureText(h).width+2*u,m=(l+s+c)/2-f/2,T=(i-p-g-x)/2,C=T+p+x,v=[T,T+p,m,m+f],w=[C,C+g,m,m+f];// 取消按钮所占矩形范围（左右X的范围，上下Y的范围）
 // 绘制成功和取消按钮
 e.fillStyle=a,e.fillRect(T,m,p,f),e.fillRect(C,m,g,f),e.fillStyle=n,e.fillText(d,T+u,m+u),e.fillText(h,C+u,m+u);// 判断坐标是否在矩形（按钮）范围之内
 let b=(t,e,[l,i,n,a])=>t>=l&&t<=i&&e>=n&&e<=a;// 监听点击事件，若点击到成功按钮，执行成功回调；若点击到取消按钮，执行取消回调。（只要点击到按钮都会关闭模态窗）
