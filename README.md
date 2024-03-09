@@ -1,5 +1,12 @@
 <p align="center"><img src="./assets/logo.png" width="84" height="84"/></p>
 
+<p align="center">
+<img src="https://visitor-badge.glitch.me/badge?page_id=gaoxiaosi.canvas-magic" />
+<img src="https://img.shields.io/badge/license-MIT-green" />
+</p>
+
+
+
 ## Canvas + ES6 实现经典小游戏和案例
 
 ### 目录结构
