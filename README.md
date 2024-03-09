@@ -10,8 +10,7 @@
   <img src="https://img.shields.io/github/license/gaoxiaosi/canvas-magic" />
 </p>
 
-<h1 align="center">Canvas + ES6 实现经典小游戏和案例</h1>
-<!-- <h2 align="center">Canvas + ES6 实现经典小游戏和案例</h2> -->
+<h2 align="center" border="none">Canvas + ES6 实现经典小游戏和案例</h2>
 
 ### 目录结构
 `alpha`：简单版，实现核心逻辑和算法。
