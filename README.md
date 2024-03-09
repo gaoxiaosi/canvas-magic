@@ -1,5 +1,6 @@
-## Canvas有趣的小案例
-`Canvas` + `ES6`实现经典小游戏和案例。
+<p align="center"><img src="./assets/logo.png" width="84" height="84" /></p>
+<h1 align="center" style="color: #1289FF;">Canvas-magic</h1>
+<h2 align="center">Canvas + ES6 实现经典小游戏和案例</h2>
 
 ### 目录结构
 `alpha`：简单版，实现核心逻辑和算法。
