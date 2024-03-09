@@ -6,8 +6,7 @@
 <img src="https://img.shields.io/badge/Canvas-1289FF" />
 <img src="https://img.shields.io/badge/ES6-1289FF" />
 <img src="https://img.shields.io/badge/build-Parcel-B07E52" />
-<img src="https://img.shields.io/github/stars/gaoxiaosi/canvas-magic
-" />
+<img src="https://img.shields.io/github/stars/gaoxiaosi/canvas-magic" />
 <!-- <img src="https://img.shields.io/github/forks/gaoxiaosi/canvas-magic
 " /> -->
 <!-- <img src="https://visitor-badge.glitch.me/badge?page_id=gaoxiaosi.visitor-badgecanvas-magic" /> -->
