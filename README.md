@@ -1,13 +1,13 @@
 <p align=center><img src="./assets/logo.png" width="84" height="84"/></p>
 
 <p align=center>
-  <img src="https://img.shields.io/badge/Canvas-1289FF" />
-  <img src="https://img.shields.io/badge/ES6-1289FF" />
-  <img src="https://img.shields.io/badge/build-Parcel-B07E52" />
+  <img src="https://img.shields.io/badge/Canvas-1289FF?logo=canvas&logoColor=FFFFFF" />
+  <img src="https://img.shields.io/badge/ES6-1289FF?logo=codeigniter&logoColor=FFFFFF" />
+  <img src="https://img.shields.io/badge/build-Parcel-B07E52?logo=webpack&logoColor=B07E52" />
   <img src="https://img.shields.io/github/stars/gaoxiaosi/canvas-magic" />
-  <img src="https://img.shields.io/github/last-commit/gaoxiaosi/canvas-magic/main" />
-  <img src="https://img.shields.io/github/package-json/v/gaoxiaosi/canvas-magic" />
-  <img src="https://img.shields.io/github/license/gaoxiaosi/canvas-magic" />
+  <img src="https://img.shields.io/github/last-commit/gaoxiaosi/canvas-magic/main?logo=git&&logoColor=37B110" />
+  <img src="https://img.shields.io/github/package-json/v/gaoxiaosi/canvas-magic?logo=vimeo&logoColor=E6632D" />
+  <img src="https://img.shields.io/github/license/gaoxiaosi/canvas-magic?logo=opencollective&logoColor=7EB30B" />
 </p>
 
 <h2 align=center border=0>Canvas + ES6 实现经典小游戏和案例</h2>
