@@ -1,6 +1,10 @@
 <p align="center"><img src="./assets/logo.png" width="84" height="84" /></p>
-<p align="center" style="font-size: 40px; font-weight: bold; color: #1289FF;">Canvas-magic</p>
-<p align="center" style="font-size: 30px; font-weight: bold;">Canvas + ES6 实现经典小游戏和案例</p>
+<p align="center">
+  <span style="font-size: 40px; font-weight: bold; color: #1289FF;">Canvas-magic</span>
+</p>
+<p align="center"">
+  <span style="font-size: 30px; font-weight: bold;">Canvas + ES6 实现经典小游戏和案例</span>
+</p>
 
 ### 目录结构
 `alpha`：简单版，实现核心逻辑和算法。
