@@ -1,6 +1,6 @@
-<p align="center"><img src="./assets/logo.png" width="84" height="84"/></p>
+<p align=center><img src="./assets/logo.png" width="84" height="84"/></p>
 
-<p align="center">
+<p align=center>
   <img src="https://img.shields.io/badge/Canvas-1289FF" />
   <img src="https://img.shields.io/badge/ES6-1289FF" />
   <img src="https://img.shields.io/badge/build-Parcel-B07E52" />
@@ -10,7 +10,13 @@
   <img src="https://img.shields.io/github/license/gaoxiaosi/canvas-magic" />
 </p>
 
-<h2 align="center" border="0">Canvas + ES6 实现经典小游戏和案例</h2>
+<p align=center>
+  <strong>
+    <font size=30>
+      <font color=#1289FF>Canvas</font> + <font color=#1289FF>ES6</font> 实现经典小游戏和案例
+    </font>
+  </strong>
+</p>
 
 ### 目录结构
 `alpha`：简单版，实现核心逻辑和算法。
