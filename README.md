@@ -12,7 +12,7 @@
 
 <p align=center>
   <strong>
-    <font size=30>
+    <font size=6>
       <font color=#1289FF>Canvas</font> + <font color=#1289FF>ES6</font> 实现经典小游戏和案例
     </font>
   </strong>
