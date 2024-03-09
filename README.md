@@ -1,13 +1,16 @@
-<!-- <p align="center"><img src="./assets/logo.png" width="84" height="84"/></p> -->
+<p align="center"><img src="./assets/logo.png" width="84" height="84"/></p>
 
-<h1 align="center"><img src="./assets/logo.png" width="84" height="84" style="vertical-align:middle" /> Canvas-magic</h1>
+<!-- <h1 align="center"><img src="./assets/logo.png" width="84" height="84" style="vertical-align:middle" /> Canvas-magic</h1> -->
 
 <p align="center">
-<img src="https://img.shields.io/badge/Canvas-blue" />
-<img src="https://img.shields.io/badge/build-Parcel-yellow" />
+<img src="https://img.shields.io/badge/Canvas-1289FF" />
+<img src="https://img.shields.io/badge/ES6-1289FF" />
+<img src="https://img.shields.io/badge/build-Parcel-B07E52" />
 <img src="https://img.shields.io/github/stars/gaoxiaosi/canvas-magic
 " />
-<!-- <img src="https://visitor-badge.glitch.me/badge?page_id=gaoxiaosi.canvas-magic" /> -->
+<!-- <img src="https://img.shields.io/github/forks/gaoxiaosi/canvas-magic
+" /> -->
+<!-- <img src="https://visitor-badge.glitch.me/badge?page_id=gaoxiaosi.visitor-badgecanvas-magic" /> -->
 <img src="https://img.shields.io/github/package-json/v/gaoxiaosi/canvas-magic" />
 <img src="https://img.shields.io/badge/license-MIT-green" />
 </p>
