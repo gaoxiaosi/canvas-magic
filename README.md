@@ -1,10 +1,6 @@
 <p align="center"><img src="./assets/logo.png" width="84" height="84" /></p>
-<p align="center">
-  <span style="font-size: 40px; font-weight: bold; color: #1289FF;">Canvas-magic</span>
-</p>
-<p align="center"">
-  <span style="font-size: 30px; font-weight: bold;">Canvas + ES6 实现经典小游戏和案例</span>
-</p>
+<h1 align="center">Canvas-magic</h1>
+<h1 align="center"">Canvas + ES6 实现经典小游戏和案例</p>
 
 ### 目录结构
 `alpha`：简单版，实现核心逻辑和算法。
@@ -15,7 +11,7 @@
 
 `plugin`：公共插件目录，目前只有弹窗，后续可能有按钮。
 
-`其他目录`：不要管，用于快速创建项目和打包构建，还有一些脚本。
+`其他目录`：不用管，用于快速创建项目和打包构建，还有一些脚本。
 
 <!-- ### 项目运行
 1. `npm install`
