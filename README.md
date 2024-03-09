@@ -1,6 +1,6 @@
 <p align="center"><img src="./assets/logo.png" width="84" height="84" /></p>
-<h1 align="center">Canvas-magic</h1>
-<h1 align="center"">Canvas + ES6 实现经典小游戏和案例</p>
+<h2 align="center">Canvas-magic</h2>
+<h2 align="center"">Canvas + ES6 实现经典小游戏和案例</p>
 
 ### 目录结构
 `alpha`：简单版，实现核心逻辑和算法。
