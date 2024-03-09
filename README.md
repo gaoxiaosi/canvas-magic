@@ -1,7 +1,11 @@
 <p align="center"><img src="./assets/logo.png" width="84" height="84"/></p>
 
 <p align="center">
-<!-- <img src="https://visitor-badge.glitch.me/badge?page_id=gaoxiaosi.canvas-magic" /> -->
+<img src="https://img.shields.io/badge/Canvas-blue" />
+<img src="https://img.shields.io/badge/build-Parcel-yellow" />
+<img src="https://img.shields.io/github/stars/gaoxiaosi/canvas-magic
+" />
+<img src="https://visitor-badge.glitch.me/badge?page_id=gaoxiaosi.canvas-magic" />
 <img src="https://img.shields.io/badge/license-MIT-green" />
 </p>
 
