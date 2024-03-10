@@ -2,7 +2,7 @@
 
 <p align=center>
   <img src="https://img.shields.io/badge/Canvas-1289FF?logo=canvas&logoColor=FFFFFF" />
-  <img src="https://img.shields.io/badge/ES6-1289FF?logo=coffeescript&logoColor=FFFFFF" />
+  <img src="https://img.shields.io/badge/ES6-1289FF?logo=bilibili&logoColor=FFFFFF" />
   <img src="https://img.shields.io/badge/pack-Parcel-B07E52?logo=webpack&logoColor=B07E52" />
   <img src="https://img.shields.io/github/stars/gaoxiaosi/canvas-magic" />
   <img src="https://img.shields.io/github/last-commit/gaoxiaosi/canvas-magic/main?logo=git&&logoColor=37B110" />
