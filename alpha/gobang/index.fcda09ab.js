@@ -1,5 +1,4 @@
-let t=document.createElement("canvas"),e=t.getContext("2d");// 总步数
-t.width=t.height=800,t.style.cssText="position: absolute; inset: 0; margin: auto; cursor: pointer;",document.body.appendChild(t);// 记录棋盘的黑白棋，15*15的二维数组，初始值：-1，黑棋：1，白棋：2
+/** @type {HTMLCanvasElement} */let t=document.createElement("canvas"),e=t.getContext("2d");t.width=t.height=800,t.style.cssText="position: absolute; inset: 0; margin: auto; cursor: pointer;",document.body.appendChild(t);// 记录棋盘的黑白棋，15*15的二维数组，初始值：-1，黑棋：1，白棋：2
 let l=Array.from({length:15},()=>Array(15).fill(-1)),o=!0,r=0;// 下棋步数
 // 监听棋盘点击位置
 t.onclick=t=>{let[e,i]=[t.offsetX,t.offsetY].map(t=>Math.round(t/50)-1);if(l[e]?.[i]!==-1)return alert("该位置不可落子！");n(e,i,o),l[e][i]=o?1:2,a(e,i,l[e][i],l)?alert(`${o?"黑":"白"}\u{68CB}\u{8D62}\u{4E86}!`):225==++r?alert("游戏结束，平局！"):o=!o};// 两点连线：(x1, y1) <-> (x2, y2)，设置线条宽度lineWidth和颜色LINE_COLOR
