@@ -2,17 +2,17 @@
 
 <p align=center>
   <img src="https://img.shields.io/badge/Canvas-1289FF?logo=canvas&logoColor=FFFFFF" />
-  <img src="https://img.shields.io/badge/ES6-1289FF?logo=codeigniter&logoColor=FFFFFF" />
-  <img src="https://img.shields.io/badge/build-Parcel-B07E52?logo=webpack&logoColor=B07E52" />
+  <img src="https://img.shields.io/badge/ES6-1289FF?logo=coffeescript&logoColor=FFFFFF" />
+  <img src="https://img.shields.io/badge/pack-Parcel-B07E52?logo=webpack&logoColor=B07E52" />
   <img src="https://img.shields.io/github/stars/gaoxiaosi/canvas-magic" />
   <img src="https://img.shields.io/github/last-commit/gaoxiaosi/canvas-magic/main?logo=git&&logoColor=37B110" />
   <img src="https://img.shields.io/github/package-json/v/gaoxiaosi/canvas-magic?logo=vimeo&logoColor=E6632D" />
   <img src="https://img.shields.io/github/license/gaoxiaosi/canvas-magic?logo=opencollective&logoColor=7EB30B" />
 </p>
 
-<h2 align=center border=0>Canvas + ES6 实现经典小游戏和案例</h2>
+<h2 align=center>Canvas + ES6 实现经典小游戏和案例</h2>
 
-### 目录结构
+### 目录说明
 `alpha`：简单版，实现核心逻辑和算法。
 
 `standard`：标准版，美化界面，优化代码。
@@ -23,12 +23,12 @@
 
 `其他目录`：不用管，用于快速创建项目和打包构建，还有一些脚本。
 
-<!-- ### 项目运行
-1. `npm install`
-2. `npm run start`
-3. 浏览器自动打开`http://localhost:1234`(默认)
+### 项目运行
+1. `npm install`，安装所有需要的包
+2. `npm run start`，启动项目并自动打开浏览器
+3. `http://localhost:1234`(端口可在packag.json的start脚本里修改)
 4. 点击铜牌(简单版)、银牌(标准版)、金牌(测试版)打开相应版本页面
-5. 修改相关文件，保存后可触发热更新自动刷新页面 -->
+5. 修改相关文件，保存后可触发热更新自动刷新页面
 
 ### 多说三句
 
