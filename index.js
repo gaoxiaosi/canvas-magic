@@ -167,6 +167,6 @@ const handleMoveOnCanvas = e => canvas.style.cursor = getType(e.offsetX, y = e.o
 
 window.onresize = debounce(handleResize, DEBOUNCE_DURATION)
 
-canvas.onmousemove = debounce(handleMoveOnCanvas, 128)
+canvas.onmousemove = debounce(handleMoveOnCanvas, 64)
 
 window.onload = start
