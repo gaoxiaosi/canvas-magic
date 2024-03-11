@@ -1,4 +1,4 @@
-let SIZE = 15, // 棋盘15*15=225个点
+const SIZE = 15, // 棋盘15*15=225个点
   W = 50 , // 棋盘格子大小
   SL = W * (SIZE + 1), // 边长 = 棋盘宽高
   TOTAL_STEPS = SIZE * SIZE; // 总步数
@@ -16,7 +16,7 @@ let chess = Array.from({ length: SIZE }, () => Array(SIZE).fill(-1)),
 
 // 监听棋盘点击位置
 canvas.onclick = e => {
-  let [x, y] = [e.offsetX, e.offsetY].map(d => Math.round(d / W) - 1);
+  let [x, y] = [e.offsetX, e.offsetY].map(p => Math.round(p / W) - 1);
   if (chess[x]?.[y] !== -1) return alert('该位置不可落子！');
   drawPiece(x, y, isBlack);
   chess[x][y] = isBlack ? 1 : 2;

@@ -1,8 +1,6 @@
 import Mask from "../../plugin/canvas-mask.js";
 
-let SIZE = 15, // 棋盘15*15=225个点
-  W = Math.min(window.innerWidth, window.innerHeight) / (SIZE + 3) , // 棋盘格子大小
-  SL = W * (SIZE + 1), // 边长 = 棋盘宽高
+const SIZE = 15, // 棋盘15*15=225个点
   BOARD_BG_COLOR = '#E4A751', // 棋盘背景颜色
   LINE_WIDTH = 1, // 默认线条宽度
   LINE_COLOR = '#000000', // 棋盘线颜色
@@ -19,6 +17,9 @@ let SIZE = 15, // 棋盘15*15=225个点
   WHITE_ROLE = 2, // 白棋
   EMPTY_ROLE = -1, // 空
   TOTAL_STEPS = SIZE * SIZE; // 总步数
+
+let W = Math.min(window.innerWidth, window.innerHeight) / (SIZE + 3) , // 棋盘格子大小
+  SL = W * (SIZE + 1); // 边长 = 棋盘宽高
 
 /** @type {HTMLCanvasElement} */
 let canvas = document.createElement('canvas'), ctx = canvas.getContext('2d');
@@ -51,7 +52,7 @@ regretBtn.onclick = e => {
 
 // 监听棋盘点击位置
 canvas.onclick = e => {
-  let [x, y] = [e.offsetX, e.offsetY].map(d => Math.round(d / W) - 1);
+  let [x, y] = [e.offsetX, e.offsetY].map(p => Math.round(p / W) - 1);
   if (chess[x]?.[y] !== EMPTY_ROLE) return;
   if (steps.length > 0) {
     let {x, y, isBlack} = steps.at(-1)
@@ -156,7 +157,6 @@ const debounce = (fn, delay) => {
 }
 
 const handleResize = () => {
-  console.log('onresize')
   ctx.clearRect(0, 0, SL, SL);
   W = Math.min(window.innerWidth, window.innerHeight) / (SIZE + 3);
   SL = W * (SIZE + 1);
