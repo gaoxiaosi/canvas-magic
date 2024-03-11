@@ -102,8 +102,8 @@ const moveAnimate = (moveGroup, staticMoveGroup, diretion, duration = MOVE_DURAT
     activeGroup.forEach(({ x, y, val }) => drawDataBlock(x, y, val))
     elapsed = timestamp - start;
     if (elapsed < duration) { // 判断是否绘制完成
-      activeGroup = moveGroup.map(({ index, start, val, distance }) => getMovePos(index, start, val, distance * elapsed / duration));
-      // activeGroup = moveGroup.map(({index, start, val, distance}) => getMovePos(index, start, val, distance * Math.sin(elapsed / duration * Math.PI / 2)));
+      // activeGroup = moveGroup.map(({ index, start, val, distance }) => getMovePos(index, start, val, distance * elapsed / duration)); // 匀速
+      activeGroup = moveGroup.map(({index, start, val, distance}) => getMovePos(index, start, val, distance * Math.sin(elapsed / duration * Math.PI / 2))); //sin函数，先快后慢
       requestAnimationFrame(draw);
     } else { // 绘制完成
       resolve(animateId);
@@ -184,7 +184,6 @@ const keydownEvent = {
 
 const update = async () => {
   if (isWin()) {
-    // console.log('你赢了' )
     isOver = true;
     over('你赢了!');
   } else {
@@ -230,7 +229,7 @@ const start = async () => {
     images[index] = img;
     img.onload = () => {
       isLoadeds[index] = true;
-      data.forEach((col, x) => col.forEach((v, y) => v === index & drawDataBlock(x, y, v)))
+      data.forEach((col, x) => col.forEach((v, y) => v === index && drawDataBlock(x, y, v)))
     }
   })
   let scaleGroup = [];

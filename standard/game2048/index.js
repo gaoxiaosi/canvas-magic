@@ -161,7 +161,6 @@ const keydownEvent = {
 
 const update = async () => {
   if (isWin()) {
-    // console.log('你赢了' )
     isOver = true;
     over('你赢了!');
   } else {
