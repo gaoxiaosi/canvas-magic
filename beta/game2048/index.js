@@ -3,13 +3,18 @@ import img2 from './2.png'
 import img3 from './3.png'
 import img4 from './4.png'
 import img5 from './5.png'
+import img6 from './6.png'
+import img7 from './7.jpg'
+import img8 from './8.jpg'
+import img9 from './9.png'
+import img10 from './10.jpg'
 
 import Mask from "../../plugin/canvas-mask.js";
 
 const W = 125, // 格子宽度
   SPACE = 20, // 格子间隔
-  ROWS = 4,
-  COLUMNS = 4,
+  ROWS = 4, // 行
+  COLUMNS = 4, // 列
   SIDE_W = W * COLUMNS + SPACE * (COLUMNS + 1), // 宽
   SIDE_H = W * ROWS + SPACE * (ROWS + 1), // 高
   BG_COLOR = '#F9F7EB', // 页面背景颜色
@@ -18,7 +23,7 @@ const W = 125, // 格子宽度
   RADIUS_SIZE = 6, // 默认圆角大小
   MASK_PRIMARY_COLOR = '#EDA166',
   MASK_COLOR = 'rgba(143, 122, 102, 0.5)',
-  VALUES = [img1, img2, img3, img4, img5], // 打包时通过import引入图片
+  VALUES = [img1, img2, img3, img4, img5, img6, img7, img8, img9, img10], // 打包时通过import引入图片
   // VALUES = ['./1.png', './2.png', './3.png', './4.png', './5.png'], // 本地测试
   // VALUES = [ // 线上图片地址（可在浏览器中设置“不要缓存”和“限制网速”进行调试）
   //   'https://bideyuanli.com/wp-content/themes/2048/zhan/1.png',
@@ -29,8 +34,10 @@ const W = 125, // 格子宽度
   // ],
   VALUE_COLORS = ['#EEE4DA', '#EDE0C8', '#EDA166', '#F08151', '#F1654D', '#F1462E', '#E8C65F', '#E8C34F', '#E8BE40', '#E8BB31', '#E8B724'],
   MOVE_DURATION = 64,  //  移动动画时间
-  SCALE_DURATION = 128, //  缩放动画时间
-  MAX_SCALE_RATIO = 0.3; // 最大缩放比例
+  MERGE_SCALE_DURATION = 128, // 合并时缩放动画时间
+  APPEAR_SCALE_DURATION = 256, // 新出现时缩放动画时间
+  MERGE_SCALE_RATIO = 0.3, // 合并时最大缩放比例
+  APPEAR_SCALE_RATIO = 0.3; // 新出现时的初始比例
 
 /** @type {HTMLCanvasElement} */
 let canvas = document.createElement('canvas'), ctx = canvas.getContext('2d');
@@ -65,34 +72,27 @@ const execute = async (cb, oldData, diretion) => {
   let moveAnimateId = await moveAnimate(moveGroup, staticMoveGroup, diretion);
   cancelAnimationFrame(moveAnimateId);
   if (scaleGroup.length > 0) {
-    let getScalePos = scaleTruePos[diretion];
-    scaleGroup = scaleGroup.map(({ index, end, val }) => getScalePos(index, end, val))
-    staticScaleGroup = staticScaleGroup.map(({ index, end, val }) => getScalePos(index, end, val))
-    let scaleAnimateId = await scaleAnimate(scaleGroup, staticScaleGroup)
+    let getPos = getTruePos[diretion];
+    scaleGroup = scaleGroup.map(({ index, end, val }) => getPos(index, end, val))
+    staticScaleGroup = staticScaleGroup.map(({ index, end, val }) => getPos(index, end, val))
+    let scaleAnimateId = await scaleAnimate(scaleGroup, staticScaleGroup, mergeScale, MERGE_SCALE_RATIO, MERGE_SCALE_DURATION);
     cancelAnimationFrame(scaleAnimateId);
   }
   update();
 }
 
-// 移动动画时：获取坐标
-const moveTruePos = {
-  ArrowUp: (index, start, val, delta) => ({ x: index, y: ROWS - 1 - start - delta, val }),
-  ArrowDown: (index, start, val, delta) => ({ x: index, y: start + delta, val }),
-  ArrowLeft: (index, start, val, delta) => ({ x: COLUMNS - 1 - start - delta, y: index, val }),
-  ArrowRight: (index, start, val, delta) => ({ x: start + delta, y: index, val })
+// 获取准确的坐标（根据方向、行列、下标）
+const getTruePos = {
+  ArrowUp: (index, start, val, delta = 0) => ({ x: index, y: ROWS - 1 - start - delta, val }),
+  ArrowDown: (index, start, val, delta = 0) => ({ x: index, y: start + delta, val }),
+  ArrowLeft: (index, start, val, delta = 0) => ({ x: COLUMNS - 1 - start - delta, y: index, val }),
+  ArrowRight: (index, start, val, delta = 0) => ({ x: start + delta, y: index, val })
 }
 
-// 缩放动画时：获取坐标
-const scaleTruePos = {
-  ArrowUp: (index, end, val) => ({ x: index, y: ROWS - 1 - end, val }),
-  ArrowDown: (index, end, val) => ({ x: index, y: end, val }),
-  ArrowLeft: (index, end, val) => ({ x: COLUMNS - 1 - end, y: index, val }),
-  ArrowRight: (index, end, val) => ({ x: end, y: index, val })
-}
-
+// 移动动画
 const moveAnimate = (moveGroup, staticMoveGroup, diretion, duration = MOVE_DURATION) => new Promise(resolve => {
-  let start = null, elapsed = null, activeGroup = [], animateId = null, getMovePos = moveTruePos[diretion], getScalePos = scaleTruePos[diretion];
-  staticMoveGroup = staticMoveGroup.map(({ index, end, val }) => getScalePos(index, end, val))
+  let start = null, elapsed = null, activeGroup = [], animateId = null, getPos = getTruePos[diretion];
+  staticMoveGroup = staticMoveGroup.map(({ index, end, val }) => getPos(index, end, val))
   const draw = timestamp => {
     if (!start) start = timestamp;
     ctx.clearRect(0, 0, SIDE_W, SIDE_H);
@@ -103,7 +103,7 @@ const moveAnimate = (moveGroup, staticMoveGroup, diretion, duration = MOVE_DURAT
     elapsed = timestamp - start;
     if (elapsed < duration) { // 判断是否绘制完成
       // activeGroup = moveGroup.map(({ index, start, val, distance }) => getMovePos(index, start, val, distance * elapsed / duration)); // 匀速
-      activeGroup = moveGroup.map(({index, start, val, distance}) => getMovePos(index, start, val, distance * Math.sin(elapsed / duration * Math.PI / 2))); //sin函数，先快后慢
+      activeGroup = moveGroup.map(({index, start, val, distance}) => getPos(index, start, val, distance * Math.sin(elapsed / duration * Math.PI / 2))); //sin函数，先快后慢
       requestAnimationFrame(draw);
     } else { // 绘制完成
       resolve(animateId);
@@ -112,19 +112,20 @@ const moveAnimate = (moveGroup, staticMoveGroup, diretion, duration = MOVE_DURAT
   animateId = requestAnimationFrame(draw);
 })
 
-const scaleAnimate = (scaleGroup, staticScaleGroup, duration = SCALE_DURATION, maxScaleRatio = MAX_SCALE_RATIO) => new Promise(resolve => {
-  let start = null, elapsed = null, animateId = null, scaleRatio = 0;
+// 缩放动画
+const scaleAnimate = (scaleGroup, staticScaleGroup, scaleFn, scaleRatio, duration) => new Promise(resolve => {
+  let start = null, elapsed = null, animateId = null, ratio = 0;
   const draw = timestamp => {
     if (!start) start = timestamp;
     ctx.clearRect(0, 0, SIDE_W, SIDE_H);
     drawBoard();
     drawBaseBlock(data);
     staticScaleGroup.forEach(({ x, y, val }) => drawDataBlock(x, y, val))
-    scaleGroup.forEach(({ x, y, val }) => drawDataBlock(x - scaleRatio / 2, y - scaleRatio / 2, val, W + W * scaleRatio))
+    scaleGroup.forEach(({ x, y, val }) => drawDataBlock(x - ratio / 2, y - ratio / 2, val, W + W * ratio))
     elapsed = timestamp - start;
     if (elapsed < duration) { // 判断是否绘制完成
-      // scaleRatio = (1 - Math.abs(1 - elapsed / duration * 2)) * 0.2
-      scaleRatio = Math.sin(elapsed / duration * Math.PI) * maxScaleRatio;
+      // scaleRatio = (1 - Math.abs(1 - elapsed / duration * 2)) * maxScaleRatio
+      ratio = scaleFn(elapsed / duration, scaleRatio);
       requestAnimationFrame(draw);
     } else { // 绘制完成
       resolve(animateId);
@@ -132,6 +133,12 @@ const scaleAnimate = (scaleGroup, staticScaleGroup, duration = SCALE_DURATION, m
   }
   animateId = requestAnimationFrame(draw);
 })
+
+// 合并时缩放变化：先放大，再恢复原本大小
+const mergeScale = (progress, scaleRatio) => Math.sin(progress * Math.PI) * scaleRatio;
+
+// 新出现方块的缩放变化，从小变到大
+const appearScale = (progress, scaleRatio) => - Math.cos(progress * Math.PI / 2) * scaleRatio;
 
 // 移动时数字的移动和合并
 // const move = list => {
@@ -197,7 +204,7 @@ const update = async () => {
       isOver = true;
       over('你输了');
     };
-    await scaleAnimate([{ x, y, val }], staticGroup)
+    await scaleAnimate([{ x, y, val }], staticGroup, appearScale, APPEAR_SCALE_RATIO, APPEAR_SCALE_DURATION)
   }
   ctx.clearRect(0, 0, SIDE_W, SIDE_H);
   drawBoard();
@@ -239,13 +246,17 @@ const start = async () => {
     data[x][y] = val;
     scaleGroup.push({x, y, val});
   }
-  await scaleAnimate(scaleGroup, [])
-  // let presets = [[0, 1], [0, 2], [1, 0], [1, 3], [2, 1], [2, 4], [3, 0], [3, 3], [4, 2], [4, 1]]
-  // presets.forEach(([x, y]) => {
-  //   data[x][y] = Math.floor(Math.random() * (VALUES.length - 1))
-  //   scaleGroup.push({ x, y, val: data[x][y] })
+  await scaleAnimate(scaleGroup, [], appearScale, APPEAR_SCALE_RATIO, APPEAR_SCALE_DURATION)
+  // 爱心的点位，记得将行和列改成5*5，在全局变量处改：ROWS = 5, COLUMNS = 5
+  // let scaleGroup = [];
+  // let presets = [[1, 0], [0, 1], [0, 2], [1, 3], [2, 4], [3, 3], [4, 2], [4, 1], [3, 0], [2, 1]],
+  //   keys = [0, 6, 7, 3, 5, 8, 4, 2, 1, 9];
+  // presets.forEach(([x, y], index) => {
+  //   console.log(x, y, index)
+  //   data[x][y] = keys[index];
+  //   scaleGroup.push({ x, y, val: keys[index] })
   // })
-  // await scaleAnimate(scaleGroup, [])
+  // await scaleAnimate(scaleGroup, [], appearScale, APPEAR_SCALE_RATIO, APPEAR_SCALE_DURATION)
   drawBoard();
   drawAllBlock(data);
 }
