@@ -5,31 +5,27 @@ import standardIcon from './assets/standard.png' // 标准版icon
 import betaIcon from './assets/beta.png'         // 测试版icon
 import * as logos from './logo.js'               // 导入所有项目的Logo
 
-const BG_COLOR = '#0E0E0E',  // 背景颜色
-  PRIMARY_COLOR = '#1289FF', // 主题颜色
-  TITLE_H = 80,              // 网站Logo+标题部分的高度
-  TITEL = 'Canvas Magic',    // 标题
-  TITLE_FONT_SIZE = 50,      // 标题字体大小
-  RADIUS_SIZE = 8,           // 卡片的圆角
-  CARD_COLOR = '#2C2C32',    // 卡片的颜色
-  LOGO_W = 64,               // 卡片里logo的大小
-  PADDING = 15,              // 卡片内部的padding
-  W = 230,                   // 卡片的宽
-  H = LOGO_W + PADDING * 2,  // 卡片的高
-  SPACE = 25,                // 间距（通用，标题与第一行卡片、卡片与卡片）
-  DEBOUNCE_DURATION = 256,   // 防抖延时时间
-  MIN_COLUMN = 2,            // 最小列数（自适应），最小不可小于2，否则标题显示不全
-  MAX_COLUMN = 2;            // 最多列数（自适应），项目暂时只有2个，为了居中暂设为2
+const BG_COLOR = '#0E0E0E',                      // 背景颜色
+  PRIMARY_COLOR = '#1289FF',                     // 主题颜色
+  TITLE_H = 80,                                  // 网站Logo+标题部分的高度
+  TITEL = 'Canvas Magic',                        // 标题
+  TITLE_FONT_SIZE = 50,                          // 标题字体大小
+  RADIUS_SIZE = 8,                               // 卡片的圆角
+  CARD_COLOR = '#2C2C32',                        // 卡片的颜色
+  LOGO_W = 64,                                   // 卡片里logo的大小
+  PADDING = 15,                                  // 卡片内部的padding
+  W = 230,                                       // 卡片的宽
+  H = LOGO_W + PADDING * 2,                      // 卡片的高
+  SPACE = 25,                                    // 间距（通用，标题与第一行卡片、卡片与卡片）
+  DEBOUNCE_DURATION = 256,                       // 防抖默认延时时间
+  MIN_COLUMN = 2,                                // 最小列数（自适应），不可小于2，否则标题显示不全
+  MAX_COLUMN = dataList.length;                  // 最大列数（自适应），不超过项目数，否则无法居中
 
 // 根据页面宽度获取列数
-const getColumn = () => {
-  let col = Math.floor(window.innerWidth / (W + SPACE));
-  return col < MIN_COLUMN ? MIN_COLUMN : 
-    col > MAX_COLUMN ? MAX_COLUMN : col
-}
+const getColumn = () => Math.min(Math.max(Math.floor(window.innerWidth / (W + SPACE)), MIN_COLUMN), MAX_COLUMN);
 
-let column = getColumn(),                    // 列数
-  row = Math.ceil(dataList.length / column); // 行数
+let column = getColumn(),                         // 列数
+  row = Math.ceil(dataList.length / column);      // 行数
 
 /** @type {HTMLCanvasElement} */
 let canvas = document.createElement('canvas'), ctx = canvas.getContext('2d');
@@ -78,6 +74,7 @@ const isPointInRange = (x, y, [left, right, top, bottom]) => x >= left && x <= r
 // 获取点击的位置所在的行列
 const getPos = (x, y) => ({ curCol: Math.floor(x / (W + SPACE)), curRow: Math.floor((y - TITLE_H - SPACE) / (H + SPACE))})
 
+// 绘制卡片
 const drawCard = (data, index) => {
   let curRow = Math.floor(index / column);
   let curCol = index % column;
@@ -99,30 +96,27 @@ const drawCard = (data, index) => {
   drawImage(betaIcon,     x + PADDING * 4 + LOGO_W * 1.75,  startY, w, h);
 }
 
+// 绘制图片
 const drawImage = (src, x, y, w, h) => {
   let img = new Image();
   img.src = src;
-  img.onload = () => {
-    ctx.drawImage(img, x, y, w, h);
-  }
+  img.onload = () => ctx.drawImage(img, x, y, w, h);
 }
 
+// 绘制标题
 const drawTitle = () => {
   ctx.font = `${TITLE_FONT_SIZE}px blod serif`;
-  let metrics = ctx.measureText(TITEL);
-  let textWidth = metrics.actualBoundingBoxLeft + metrics.actualBoundingBoxRight;
-  let start = (canvas.width - TITLE_H - SPACE - textWidth) / 2;
-  let img = new Image();
-  img.src = logo;
-  img.onload = () => {
-    ctx.drawImage(img, start, 0, TITLE_H, TITLE_H);
-  }
+  let metrics = ctx.measureText(TITEL),
+    textWidth = metrics.actualBoundingBoxLeft + metrics.actualBoundingBoxRight,
+    start = (canvas.width - TITLE_H - SPACE - textWidth) / 2;
+  drawImage(logo, start, 0, TITLE_H, TITLE_H);
   ctx.textBaseline = 'middle';
   ctx.textAlign = 'left'
   ctx.fillStyle = PRIMARY_COLOR;
   ctx.fillText(TITEL, start + TITLE_H + SPACE, TITLE_H / 2)
 }
 
+// 启动
 const start = () => {
   drawTitle(); // 绘制Logo和标题
   dataList.forEach((data, index) => drawCard(data, index)); // 绘制卡片
@@ -146,12 +140,11 @@ const debounce = (fn, delay) => {
   let timer = null;
   return (...args) => {
     clearTimeout(timer);
-    timer = setTimeout(() => {
-      fn(...args);
-    }, delay);
+    timer = setTimeout(() => fn(...args), delay);
   }
 }
 
+// 页面发生变化时的回调（处理）
 const handleResize = () => {
   let newColumn = getColumn();
   if (newColumn === column) return;
@@ -163,6 +156,7 @@ const handleResize = () => {
   start();
 }
 
+// 鼠标在canvas上移动时回调（处理）
 const handleMoveOnCanvas = e => canvas.style.cursor = getType(e.offsetX, y = e.offsetY)['type'] ? 'pointer' : 'auto'
 
 window.onresize = debounce(handleResize, DEBOUNCE_DURATION)
