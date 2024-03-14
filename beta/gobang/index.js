@@ -27,9 +27,11 @@ canvas.width = canvas.height = SL; // 棋盘宽高 = 边长
 canvas.style.cssText = `position: absolute; inset: 0; margin: auto; box-shadow: 5px 5px 20px ${BOARD_SHADOW_COLOR}; cursor: pointer;`;
 document.body.appendChild(canvas);
 
+// document.body.style.backgroundColor = '#f5f3e1'
+
 let regretBtn = document.createElement('button');
 regretBtn.innerText = '悔棋';
-// regretBtn.style.cssText = 'display: block; position: absolute; left: 10px; top: 10px; padding: 15px 30px; font-size: 20px; cursor: pointer;'
+regretBtn.style.cssText = 'display: block; position: absolute; left: 10px; top: 10px; padding: 15px 30px; font-size: 20px; cursor: pointer;'
 // document.body.appendChild(regretBtn);
 
 // 记录棋盘的黑白棋，15*15的二维数组，初始值：0，黑棋：1，白棋：2
@@ -57,7 +59,7 @@ canvas.onclick = e => {
   if (steps.length > 0) {
     let {x, y, isBlack} = steps.at(-1)
     clearPiece(x, y);
-    drawPiece(x, y, isBlack)
+    drawPiece(x, y, isBlack);
   };
   drawPiece(x, y, isBlack);
   drawRedPoint(x, y);
