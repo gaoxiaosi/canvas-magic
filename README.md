@@ -1,9 +1,15 @@
 <p align=center><img src="./assets/logo.png" width="84" height="84"/></p>
 
 <p align=center>
-  <img src="https://img.shields.io/badge/Canvas-1289FF?logo=canvas&logoColor=FFFFFF" />
-  <img src="https://img.shields.io/badge/ES6-1289FF?logo=bilibili&logoColor=FFFFFF" />
-  <img src="https://img.shields.io/badge/pack-Parcel-B07E52?logo=webpack&logoColor=B07E52" />
+  <a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Canvas_API" target="_blank">
+    <img src="https://img.shields.io/badge/Canvas-1289FF?logo=canvas&logoColor=FFFFFF" />
+  </a>
+  <a href="https://es6.ruanyifeng.com/" target="_blank">
+    <img src="https://img.shields.io/badge/ES6-1289FF?logo=bilibili&logoColor=FFFFFF" />
+  </a>
+  <a href="https://parceljs.org/" target="_blank">
+    <img src="https://img.shields.io/badge/pack-Parcel-B07E52?logo=webpack&logoColor=B07E52" />
+  </a>
   <img src="https://img.shields.io/github/stars/gaoxiaosi/canvas-magic" />
   <img src="https://img.shields.io/github/last-commit/gaoxiaosi/canvas-magic/main?logo=git&&logoColor=37B110" />
   <img src="https://img.shields.io/github/package-json/v/gaoxiaosi/canvas-magic?logo=vimeo&logoColor=E6632D" />
