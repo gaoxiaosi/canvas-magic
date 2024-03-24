@@ -2,10 +2,10 @@ import Mask from '../../plugin/canvas-mask.js';
 
 const W = 125, // 格子宽度
   SPACE = 20, // 格子间隔
-  ROWS = 4,
-  COLUMNS = 4,
-  SIDE_W = W * COLUMNS + SPACE * (COLUMNS + 1), // 宽
-  SIDE_H = W * ROWS + SPACE * (ROWS + 1), // 高
+  ROW = 4,
+  COLUMN = 4,
+  SIDE_W = COLUMN * (W + SPACE) + SPACE, // 宽
+  SIDE_H = ROW * (W + SPACE) + SPACE, // 高
   BG_COLOR = '#F9F7EB', // 页面背景颜色
   BOARD_COLOR = '#AD9D8F', // 面板颜色
   BLOCK_COLOR = '#C2B4A5', // 方块颜色（默认）
@@ -22,9 +22,9 @@ const W = 125, // 格子宽度
   FONT_WHITE = '#F7F4EF', // 8及其之后（第3项开始）背景颜色都是比较亮的，字体颜色为白色
   MOVE_DURATION = 64,  //  移动动画时间
   MERGE_SCALE_DURATION = 128, // 合并时缩放动画时间
-  APPEAR_SCALE_DURATION = 128, // 新出现时缩放动画时间
-  MERGE_SCALE_RATIO = 0.3, // 合并时最大缩放比例
-  APPEAR_SCALE_RATIO = 0.3; // 新出现时的初始比例
+  APPEAR_SCALE_DURATION = 256, // 新出现时缩放动画时间
+  MERGE_SCALE_RATIO = 0.3, // 合并时最大缩放比例，不要超过1
+  APPEAR_SCALE_RATIO = 0.7; // 新出现时的初始比例，不要超过1
 
 /** @type {HTMLCanvasElement} */
 let canvas = document.createElement('canvas'), ctx = canvas.getContext('2d');
@@ -35,7 +35,7 @@ document.body.appendChild(canvas);
 
 document.body.style.backgroundColor = BG_COLOR;
 
-let data = Array.from({ length: COLUMNS }, () => Array(ROWS).fill(-1)), // 格子数据，空的为-1
+let data = Array.from({ length: COLUMN }, () => Array(ROW).fill(-1)), // 格子数据，空的为-1
   maxVal = 0, // 当前最大值（判断是否达到2048）
   isOver = false, // 游戏状态，是否已结束
   staticMoveGroup = [],
@@ -43,86 +43,74 @@ let data = Array.from({ length: COLUMNS }, () => Array(ROWS).fill(-1)), // 格�
   staticScaleGroup = [],
   scaleGroup = [];
 
-document.addEventListener('keydown', e => {
-  if (isOver) return;
-  const cb = keydownEvent[e.key];
-  cb && execute(cb, data, e.key);
-})
-
-const execute = async (cb, oldData, diretion) => {
-  moveGroup = [], staticMoveGroup = [], scaleGroup = [], staticScaleGroup = [];
-  let newData = cb(JSON.parse(JSON.stringify(oldData)), diretion);
-  if (newData.toString() === oldData.toString()) return
+document.addEventListener('keydown', async e => {
+  if (isOver) return; // 游戏结束时，键盘按下事件将不再执行
+  const direction = e.key, cb = keydownEvent[direction];
+  if (!cb) return; // 如果不是“上下左右”按键，不执行
+  moveGroup = [], staticMoveGroup = [], scaleGroup = [], staticScaleGroup = []; // 每次执行时，将所有的动画组清空
+  let newData = cb(JSON.parse(JSON.stringify(data)));
+  if (newData.toString() === data.toString()) return // 如果新旧data相等，说明格子并没有移动（该方向不可移动）
   data = newData;
-  let moveAnimateId = await moveAnimate(moveGroup, staticMoveGroup, diretion);
-  cancelAnimationFrame(moveAnimateId);
+  await moveAnimate(moveGroup, staticMoveGroup, direction);
   if (scaleGroup.length > 0) {
-    let getPos = getTruePos[diretion];
-    scaleGroup = scaleGroup.map(({ index, end, val }) => getPos(index, end, val))
-    staticScaleGroup = staticScaleGroup.map(({ index, end, val }) => getPos(index, end, val))
-    let scaleAnimateId = await scaleAnimate(scaleGroup, staticScaleGroup, mergeScale, MERGE_SCALE_RATIO, MERGE_SCALE_DURATION)
-    cancelAnimationFrame(scaleAnimateId);
+    let getPos = getTruePos[direction];
+    scaleGroup = scaleGroup.map(({ index, pos, val }) => getPos(index, pos, val))
+    staticScaleGroup = staticScaleGroup.map(({ index, pos, val }) => getPos(index, pos, val))
+    await scaleAnimate(scaleGroup, staticScaleGroup, mergeScale, MERGE_SCALE_RATIO, MERGE_SCALE_DURATION)
   }
   update();
-}
+})
 
 // 移动动画时：获取坐标
 const getTruePos = {
-  ArrowUp: (index, start, val, delta = 0) => ({ x: index, y: ROWS - 1 - start - delta, val }),
-  ArrowDown: (index, start, val, delta = 0) => ({ x: index, y: start + delta, val }),
-  ArrowLeft: (index, start, val, delta = 0) => ({ x: COLUMNS - 1 - start - delta, y: index, val }),
-  ArrowRight: (index, start, val, delta = 0) => ({ x: start + delta, y: index, val })
+  ArrowUp: (index, pos, val, delta = 0) => ({ x: index, y: ROW - 1 - pos - delta, val }),
+  ArrowDown: (index, pos, val, delta = 0) => ({ x: index, y: pos + delta, val }),
+  ArrowLeft: (index, pos, val, delta = 0) => ({ x: COLUMN - 1 - pos - delta, y: index, val }),
+  ArrowRight: (index, pos, val, delta = 0) => ({ x: pos + delta, y: index, val })
 }
 
-const moveAnimate = (moveGroup, staticMoveGroup, diretion, duration = MOVE_DURATION) => new Promise(resolve => {
-  let start = null, elapsed = null, activeGroup = [], animateId = null, getPos = getTruePos[diretion];
-  staticMoveGroup = staticMoveGroup.map(({ index, end, val }) => getPos(index, end, val))
+// 移动动画
+const moveAnimate = (moveGroup, staticMoveGroup, direction, duration = MOVE_DURATION) => new Promise(resolve => {
+  let start = null, elapsed = null, activeGroup = [], getPos = getTruePos[direction];
+  staticMoveGroup = staticMoveGroup.map(({ index, pos, val }) => getPos(index, pos, val))
   const draw = timestamp => {
     if (!start) start = timestamp;
+    elapsed = timestamp - start;
+    // activeGroup = moveGroup.map(({index, pos, val, distance}) => getPos(index, pos, val, distance * elapsed / duration));
+    activeGroup = moveGroup.map(({index, pos, val, distance}) => getPos(index, pos, val, distance * Math.sin(elapsed / duration * Math.PI / 2)));
     ctx.clearRect(0, 0, SIDE_W, SIDE_H);
     drawBoard();
-    drawBaseBlock(data);
     staticMoveGroup.forEach(({x, y, val}) => drawDataBlock(x, y, val))
     activeGroup.forEach(({x, y, val}) => drawDataBlock(x, y, val))
-    elapsed = timestamp - start;
-    if (elapsed < duration) { // 判断是否绘制完成
-      // activeGroup = moveGroup.map(({index, start, val, distance}) => getPos(index, start, val, distance * elapsed / duration));
-      activeGroup = moveGroup.map(({index, start, val, distance}) => getPos(index, start, val, distance * Math.sin(elapsed / duration * Math.PI / 2)));
-      requestAnimationFrame(draw);
-    } else { // 绘制完成
-      resolve(animateId);
-    }
+    elapsed < duration ? requestAnimationFrame(draw) : resolve()
   }
-  animateId = requestAnimationFrame(draw);
+  requestAnimationFrame(draw);
 })
 
-// 缩放动画
+// 缩放动画（合并或新出现时都用得上）
 const scaleAnimate = (scaleGroup, staticScaleGroup, scaleFn, scaleRatio, duration) => new Promise(resolve => {
-  let start = null, elapsed = null, animateId = null, ratio = 0;
+  let start = null, elapsed = null, ratio = 0;
   const draw = timestamp => {
     if (!start) start = timestamp;
+    elapsed = timestamp - start;
+    // ratio = (1 - Math.abs(1 - elapsed / duration * 2)) * scaleRatio
+    ratio = scaleFn(elapsed / duration, scaleRatio);
+    console.log(ratio)
     ctx.clearRect(0, 0, SIDE_W, SIDE_H);
     drawBoard();
-    drawBaseBlock(data);
     staticScaleGroup.forEach(({x, y, val}) => drawDataBlock(x, y , val))
     scaleGroup.forEach(({x, y, val}) => drawDataBlock(x - ratio / 2, y - ratio / 2, val, W + W * ratio, ratio))
-    elapsed = timestamp - start;
-    if (elapsed < duration) { // 判断是否绘制完成
-      // scaleRatio = (1 - Math.abs(1 - elapsed / duration * 2)) * maxScaleRatio
-      ratio = scaleFn(elapsed / duration, scaleRatio);
-      requestAnimationFrame(draw);
-    } else { // 绘制完成
-      resolve(animateId);
-    }
+    elapsed < duration ? requestAnimationFrame(draw) : resolve();
   }
-  animateId = requestAnimationFrame(draw);
+  requestAnimationFrame(draw);
 })
 
 // 合并时缩放变化：先放大，再恢复原本大小
 const mergeScale = (progress, scaleRatio) => Math.sin(progress * Math.PI) * scaleRatio;
 
 // 新出现方块的缩放变化，从小变到大
-const appearScale = (progress, scaleRatio) => - Math.cos(progress * Math.PI / 2) * scaleRatio;
+const appearScale = (progress, scaleRatio) => Math.cos(progress * Math.PI / 2 + Math.PI) * (1 - scaleRatio);
+
 
 const move = (list, index) => {
   let temp = [], isMerge = false, len = list.length, distance = 0;
@@ -131,15 +119,14 @@ const move = (list, index) => {
     if (isMerge && list[i] === temp[0]) {
       maxVal = Math.max(++temp[0], maxVal)
       isMerge = false;
-      scaleGroup.push({ index, val: list[i], end: len - temp.length })
+      scaleGroup.push({ index, val: list[i], pos: len - temp.length })
       staticScaleGroup.pop();
     } else {
       temp.unshift(list[i]);
-      staticScaleGroup.push({ index, val: list[i], end: len - temp.length })
+      staticScaleGroup.push({ index, val: list[i], pos: len - temp.length })
       isMerge = true;
     }
-    distance = len - temp.length - i;
-    distance === 0 ? staticMoveGroup.push({ index, val: list[i], end: i }) : moveGroup.push({ index, val: list[i], start: i, distance: len - temp.length - i });
+    (distance = len - temp.length - i) === 0 ? staticMoveGroup.push({ index, val: list[i], pos: i }) : moveGroup.push({ index, val: list[i], pos: i, distance });
   }
   return new Array(len - temp.length).fill(-1).concat(temp)
 }
@@ -178,7 +165,7 @@ const update = async () => {
   }
   ctx.clearRect(0, 0, SIDE_W, SIDE_H);
   drawBoard();
-  drawAllBlock(data);
+  drawAllDataBlock();
 } 
 
 // 判断是否获胜
@@ -198,7 +185,7 @@ const start = async () => {
   }
   await scaleAnimate(scaleGroup, [], appearScale, APPEAR_SCALE_RATIO, APPEAR_SCALE_DURATION)
   drawBoard();
-  drawAllBlock(data);
+  drawAllDataBlock();
 }
 
 // 游戏结束，弹出提示
@@ -206,7 +193,7 @@ const over = textTitle => new Mask({canvas, onSuccess: restart, maskColor: MASK_
 
 const restart = () => {
   isOver = false;
-  data = Array.from({ length: COLUMNS }, () => Array(ROWS).fill(-1));
+  data = Array.from({ length: COLUMN }, () => Array(ROW).fill(-1));
   maxVal = 0;
   moveGroup = [];
   staticMoveGroup = [];
@@ -214,6 +201,8 @@ const restart = () => {
   staticScaleGroup = [];
   start();
 }
+
+const trans = pos => pos * (SPACE + W) + SPACE
 
 const drawDataBlock = (x, y, valIndex, w = W, scaleRatio = 0) => {
   const [dataVal, fillColor, fontSize] = [VALUES, VALUE_COLORS, FONT_SIZE].map(v => v[valIndex]);
@@ -225,22 +214,20 @@ const drawDataBlock = (x, y, valIndex, w = W, scaleRatio = 0) => {
   ctx.fillText(dataVal, trans(x) + w / 2, trans(y) + w / 2);
 }
 
-const trans = pos => pos * (SPACE + W) + SPACE
-
-// 绘制格子（无论是否有值，打底）
-const drawBaseBlock = data => data.forEach((col, x) => col.forEach((_, y) => drawBlock(x, y)))
-
-// 绘制所有的格子
-const drawAllBlock = data => data.forEach((col, x) => col.forEach((val, y) => {
-  drawBlock(x, y);
-  val !== -1 && drawDataBlock(x, y, val);
-}))
-
-// 绘制面板
-const drawBoard = () => roundRect(0, 0, SIDE_W, SIDE_H, 6, BOARD_COLOR)
+const drawAllDataBlock = () => data.forEach((col, x) => col.forEach((v, y) => v !== -1 && drawDataBlock(x, y, v)))
 
 // 绘制默认方块
 const drawBlock = (x, y, fillColor = BLOCK_COLOR, w = W) => roundRect(trans(x), trans(y), w, w, 6, fillColor)
+
+// 绘制面板，isDrawDataBlock：是否绘制，默认不绘制
+const drawBoard = () => {
+  roundRect(0, 0, SIDE_W, SIDE_H, 6, BOARD_COLOR);
+  for (let x = 0; x < COLUMN; x++) {
+    for (let y = 0; y < ROW; y++) {
+      drawBlock(x, y);
+    }
+  }
+}
 
 // 圆角矩形
 const roundRect = (x, y, w, h, r = RADIUS_SIZE, fillColor) => {

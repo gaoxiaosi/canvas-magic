@@ -13,10 +13,10 @@ import Mask from "../../plugin/canvas-mask.js";
 
 const W = 125, // 格子宽度
   SPACE = 20, // 格子间隔
-  ROWS = 4, // 行
-  COLUMNS = 4, // 列
-  SIDE_W = W * COLUMNS + SPACE * (COLUMNS + 1), // 宽
-  SIDE_H = W * ROWS + SPACE * (ROWS + 1), // 高
+  ROW = 4, // 行
+  COLUMN = 4, // 列
+  SIDE_W = COLUMN * (W + SPACE) + SPACE, // 宽
+  SIDE_H = ROW * (W + SPACE) + SPACE, // 高
   BG_COLOR = '#F9F7EB', // 页面背景颜色
   BOARD_COLOR = '#AD9D8F', // 面板颜色
   BLOCK_COLOR = '#C2B4A5', // 方块颜色（默认）
@@ -37,7 +37,7 @@ const W = 125, // 格子宽度
   MERGE_SCALE_DURATION = 128, // 合并时缩放动画时间
   APPEAR_SCALE_DURATION = 256, // 新出现时缩放动画时间
   MERGE_SCALE_RATIO = 0.3, // 合并时最大缩放比例
-  APPEAR_SCALE_RATIO = 0.3; // 新出现时的初始比例
+  APPEAR_SCALE_RATIO = 0.7; // 新出现时的初始比例
 
 /** @type {HTMLCanvasElement} */
 let canvas = document.createElement('canvas'), ctx = canvas.getContext('2d');
@@ -48,7 +48,7 @@ document.body.appendChild(canvas);
 
 document.body.style.backgroundColor = BG_COLOR;
 
-let data = Array.from({ length: COLUMNS }, () => Array(ROWS).fill(-1)), // 格子数据，空的为-1
+let data = Array.from({ length: COLUMN }, () => Array(ROW).fill(-1)), // 格子数据，空的为-1
   maxVal = 0, // 当前最大值（判断是否达到2048）
   isOver = false, // 游戏状态，是否已结束
   moveGroup = [], // 移动动画组
@@ -83,9 +83,9 @@ const execute = async (cb, oldData, diretion) => {
 
 // 获取准确的坐标（根据方向、行列、下标）
 const getTruePos = {
-  ArrowUp: (index, start, val, delta = 0) => ({ x: index, y: ROWS - 1 - start - delta, val }),
+  ArrowUp: (index, start, val, delta = 0) => ({ x: index, y: ROW - 1 - start - delta, val }),
   ArrowDown: (index, start, val, delta = 0) => ({ x: index, y: start + delta, val }),
-  ArrowLeft: (index, start, val, delta = 0) => ({ x: COLUMNS - 1 - start - delta, y: index, val }),
+  ArrowLeft: (index, start, val, delta = 0) => ({ x: COLUMN - 1 - start - delta, y: index, val }),
   ArrowRight: (index, start, val, delta = 0) => ({ x: start + delta, y: index, val })
 }
 
@@ -138,7 +138,7 @@ const scaleAnimate = (scaleGroup, staticScaleGroup, scaleFn, scaleRatio, duratio
 const mergeScale = (progress, scaleRatio) => Math.sin(progress * Math.PI) * scaleRatio;
 
 // 新出现方块的缩放变化，从小变到大
-const appearScale = (progress, scaleRatio) => - Math.cos(progress * Math.PI / 2) * scaleRatio;
+const appearScale = (progress, scaleRatio) => - Math.cos(progress * Math.PI / 2) * (1 - scaleRatio);
 
 // 移动时数字的移动和合并
 // const move = list => {
@@ -167,7 +167,7 @@ const move = (list, index) => {
       isMerge = true;
     }
     distance = len - temp.length - i;
-    distance === 0 ? staticMoveGroup.push({ index, val: list[i], end: i }) : moveGroup.push({ index, val: list[i], start: i, distance: len - temp.length - i });
+    distance === 0 ? staticMoveGroup.push({ index, val: list[i], end: i }) : moveGroup.push({ index, val: list[i], start: i, distance });
   }
   return new Array(len - temp.length).fill(-1).concat(temp)
 }
@@ -215,10 +215,10 @@ const update = async () => {
 const isWin = () => maxVal === VALUES.length - 1
 
 // const isLose = () => {
-//   for (let i = 0; i < COLUMNS; i++) {
-//     for (let j = 0; j < ROWS; j++) {
+//   for (let i = 0; i < COLUMN; i++) {
+//     for (let j = 0; j < ROW; j++) {
 //       // 游戏未结束条件：1.本身是空值 2.下方没有相同值 3.右侧没有相同值
-//       if (data[i][j] === -1 || (j < ROWS - 1 && data[i][j] === data[i][j + 1]) || (i < COLUMNS - 1 && data[i][j] === data[i + 1][j])) return false
+//       if (data[i][j] === -1 || (j < ROW - 1 && data[i][j] === data[i][j + 1]) || (i < COLUMN - 1 && data[i][j] === data[i + 1][j])) return false
 //     }
 //   }
 //   return true
@@ -247,7 +247,7 @@ const start = async () => {
     scaleGroup.push({x, y, val});
   }
   await scaleAnimate(scaleGroup, [], appearScale, APPEAR_SCALE_RATIO, APPEAR_SCALE_DURATION)
-  // 爱心的点位，记得将行和列改成5*5，在全局变量处改：ROWS = 5, COLUMNS = 5
+  // 爱心的点位，记得将行和列改成5*5，在全局变量处改：ROW = 5, COLUMN = 5
   // let scaleGroup = [];
   // let presets = [[1, 0], [0, 1], [0, 2], [1, 3], [2, 4], [3, 3], [4, 2], [4, 1], [3, 0], [2, 1]],
   //   keys = [0, 6, 7, 3, 5, 8, 4, 2, 1, 9];
@@ -279,7 +279,7 @@ const over = textTitle => new Mask({ canvas, onSuccess: restart, maskColor: MASK
 
 const restart = () => {
   isOver = false;
-  data = Array.from({ length: COLUMNS }, () => Array(ROWS).fill(-1));
+  data = Array.from({ length: COLUMN }, () => Array(ROW).fill(-1));
   maxVal = 0;
   moveGroup = [];
   staticMoveGroup = [];

@@ -1,9 +1,9 @@
 const W = 125, // 格子宽度
   SPACE = 20, // 格子间隔
-  ROWS = 4,
-  COLUMNS = 4,
-  SIDE_W = W * COLUMNS + SPACE * (COLUMNS + 1), // 宽
-  SIDE_H = W * ROWS + SPACE * (ROWS + 1), // 高
+  ROW = 4,
+  COLUMN = 4,
+  SIDE_W = COLUMN * (W + SPACE) + SPACE, // 宽
+  SIDE_H = ROW * (W + SPACE) + SPACE, // 高
   BG_COLOR = '#F9F7EB', // 页面背景颜色
   VALUES = ['2', '4', '8', '16', '32', '64', '128', '256', '512', '1024', '2048'],
   VALUE_COLORS = ['#EEE4DA', '#EDE0C8', '#EDA166', '#F08151', '#F1654D', '#F1462E', '#E8C65F', '#E8C34F', '#E8BE40', '#E8BB31', '#E8B724'],
@@ -20,20 +20,17 @@ document.body.appendChild(canvas);
 
 document.body.style.backgroundColor = BG_COLOR;
 
-let data = Array.from({ length: COLUMNS }, () => Array(ROWS).fill(-1)), // 格子数据，空的为-1
+let data = Array.from({ length: COLUMN }, () => Array(ROW).fill(-1)), // 格子数据，空的为-1
   maxVal = 0; // 当前最大值（判断是否达到2048）
 
 document.addEventListener('keydown', e => {
   const cb = keydownEvent[e.key];
-  cb && execute(cb, data);
-})
-
-const execute = (cb, oldData) => {
-  let newData = cb(JSON.parse(JSON.stringify(oldData)));
-  if (newData.toString() === oldData.toString()) return
+  if (!cb) return;
+  let newData = cb(JSON.parse(JSON.stringify(data)));
+  if (newData.toString() === data.toString()) return
   data = newData;
   update();
-}
+})
 
 // （单行）移动时算法，如[-1,2,1,1] → [-1,-1,2,2]
 const move = list => {
@@ -41,7 +38,7 @@ const move = list => {
   for (let i = list.length - 1; i >= 0; i--) {
     if (list[i] === -1) continue
     if (isMerge && list[i] === temp[0]) {
-      temp[0]++;
+      maxVal = Math.max(++temp[0], maxVal)
       isMerge = false;
     } else {
       temp.unshift(list[i]);
@@ -68,12 +65,13 @@ const keydownEvent = {
 }
 
 const update = () => {
-  if (isWin()) return alert('你赢了')
-  let {x, y} = getRandomFreePos(data);
-  data[x][y] = Math.random() < 0.5 ? 0 : 1;
   ctx.clearRect(0, 0, SIDE_W, SIDE_H);
   drawBoard();
-  drawAllBlock(data);
+  drawAllDataBlock();
+  if (isWin()) return alert('你赢了')
+  let {x, y} = getRandomFreePos();
+  data[x][y] = Math.random() < 0.5 ? 0 : 1;
+  drawDataBlock(x, y, data[x][y]);
   if (isLose()) return alert('你输了！')
 }
 
@@ -83,11 +81,11 @@ const isLose = () => !data.some((col, x) => col.some((v, y) => v === -1 || v ===
 
 const start = () => {
   for (let i = 0; i < 2; i++) {
-    let {x, y} = getRandomFreePos(data);
+    let {x, y} = getRandomFreePos();
     data[x][y] = Math.random() < 0.5 ? 0 : 1;
   }
   drawBoard();
-  drawAllBlock(data);
+  drawAllDataBlock();
 }
 
 const drawDataBlock = (x, y, valIndex, w = W) => {
@@ -103,30 +101,30 @@ const drawDataBlock = (x, y, valIndex, w = W) => {
 // 将x或y转换成真正的位置（在Canvas中的位置），用于绘制
 const trans = pos => pos * (SPACE + W) + SPACE
 
-// 绘制格子（无论是否有值，打底）
-const drawBaseBlock = data => data.forEach((row, x) => row.forEach((_, y) => drawBlock(x, y)))
-
 // 绘制所有的格子
-const drawAllBlock = data => data.forEach((row, x) => row.forEach((_, y) => {
-  drawBlock(x, y);
-  data[x][y] !== -1 && drawDataBlock(x, y, data[x][y]);
-}))
+const drawAllDataBlock = () => data.forEach((col, x) => col.forEach((v, y) => v !== -1 && drawDataBlock(x, y, v)))
 
 // 绘制面板
 const drawBoard = () => {
   ctx.fillStyle = '#AD9D8F';
   ctx.fillRect(0, 0, SIDE_W, SIDE_H);
+  for (let x = 0; x < COLUMN; x++ ) {
+    for (let y = 0; y < ROW; y++) {
+      drawBlock(x, y);
+    }
+  }
 }
 
+// 绘制默认方块
 const drawBlock = (x, y, fillColor = '#C2B4A5') => {
   ctx.fillStyle = fillColor;
   ctx.fillRect(trans(x), trans(y), W, W);
 }
 
 // 随机获取空闲位置
-const getRandomFreePos = data => {
+const getRandomFreePos = () => {
   let freePos = [];
-  data.forEach((row, x) => row.forEach((_, y) => data[x][y] === -1 && freePos.push({x, y})))
+  data.forEach((col, x) => col.forEach((v, y) => v === -1 && freePos.push({x, y})))
   return freePos[Math.floor(Math.random() * freePos.length)]
 }
 
