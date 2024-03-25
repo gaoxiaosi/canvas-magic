@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "node ./bin/cli.js",
-    "start": "rm -rf dist && parcel index.html alpha/**/index.html standard/**/index.html beta/**/index.html -p 1234 --open",
+    "start": "rm -rf dist && parcel index.html alpha/**/index.html standard/**/index.html beta/**/index.html --no-cache -p 1234 --open",
     "build": "rm -rf dist && parcel build index.html alpha/**/index.html standard/**/index.html beta/**/index.html --no-source-maps --no-cache --public-url /canvas-magic",
     "deploy": "gh-pages -d dist"
   },
