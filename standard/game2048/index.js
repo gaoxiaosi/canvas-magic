@@ -3,8 +3,8 @@ import Mask from '../../plugin/canvas-mask.js';
 const W = 125, // 格子宽度
   SPACE = 20, // 格子间隔
   ROW = 4,
-  COLUMN = 4,
-  SIDE_W = COLUMN * (W + SPACE) + SPACE, // 宽
+  COL = 4,
+  SIDE_W = COL * (W + SPACE) + SPACE, // 宽
   SIDE_H = ROW * (W + SPACE) + SPACE, // 高
   BG_COLOR = '#F9F7EB', // 页面背景颜色
   BOARD_COLOR = '#AD9D8F', // 面板颜色
@@ -35,7 +35,7 @@ document.body.appendChild(canvas);
 
 document.body.style.backgroundColor = BG_COLOR;
 
-let data = Array.from({ length: COLUMN }, () => Array(ROW).fill(-1)), // 格子数据，空的为-1
+let data = Array.from({ length: COL }, () => Array(ROW).fill(-1)), // 格子数据，空的为-1
   maxVal = 0, // 当前最大值（判断是否达到2048）
   isOver = false, // 游戏状态，是否已结束
   staticMoveGroup = [],
@@ -65,7 +65,7 @@ document.addEventListener('keydown', async e => {
 const getTruePos = {
   ArrowUp: (index, pos, val, delta = 0) => ({ x: index, y: ROW - 1 - pos - delta, val }),
   ArrowDown: (index, pos, val, delta = 0) => ({ x: index, y: pos + delta, val }),
-  ArrowLeft: (index, pos, val, delta = 0) => ({ x: COLUMN - 1 - pos - delta, y: index, val }),
+  ArrowLeft: (index, pos, val, delta = 0) => ({ x: COL - 1 - pos - delta, y: index, val }),
   ArrowRight: (index, pos, val, delta = 0) => ({ x: pos + delta, y: index, val })
 }
 
@@ -193,7 +193,7 @@ const over = textTitle => new Mask({canvas, onSuccess: restart, maskColor: MASK_
 
 const restart = () => {
   isOver = false;
-  data = Array.from({ length: COLUMN }, () => Array(ROW).fill(-1));
+  data = Array.from({ length: COL }, () => Array(ROW).fill(-1));
   maxVal = 0;
   moveGroup = [];
   staticMoveGroup = [];
@@ -222,7 +222,7 @@ const drawBlock = (x, y, fillColor = BLOCK_COLOR, w = W) => roundRect(trans(x), 
 // 绘制面板，isDrawDataBlock：是否绘制，默认不绘制
 const drawBoard = () => {
   roundRect(0, 0, SIDE_W, SIDE_H, 6, BOARD_COLOR);
-  for (let x = 0; x < COLUMN; x++) {
+  for (let x = 0; x < COL; x++) {
     for (let y = 0; y < ROW; y++) {
       drawBlock(x, y);
     }

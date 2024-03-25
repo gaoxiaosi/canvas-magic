@@ -1,8 +1,8 @@
-const W = 125, // 格子宽度
+const ROW = 4,
+  COL = 4,
+  W = 125, // 格子宽度
   SPACE = 20, // 格子间隔
-  ROW = 4,
-  COLUMN = 4,
-  SIDE_W = COLUMN * (W + SPACE) + SPACE, // 宽
+  SIDE_W = COL * (W + SPACE) + SPACE, // 宽
   SIDE_H = ROW * (W + SPACE) + SPACE, // 高
   BG_COLOR = '#F9F7EB', // 页面背景颜色
   VALUES = ['2', '4', '8', '16', '32', '64', '128', '256', '512', '1024', '2048'],
@@ -20,7 +20,7 @@ document.body.appendChild(canvas);
 
 document.body.style.backgroundColor = BG_COLOR;
 
-let data = Array.from({ length: COLUMN }, () => Array(ROW).fill(-1)), // 格子数据，空的为-1
+let data = Array.from({ length: COL }, () => Array(ROW).fill(-1)), // 格子数据，空的为-1
   maxVal = 0; // 当前最大值（判断是否达到2048）
 
 document.addEventListener('keydown', e => {
@@ -108,7 +108,7 @@ const drawAllDataBlock = () => data.forEach((col, x) => col.forEach((v, y) => v 
 const drawBoard = () => {
   ctx.fillStyle = '#AD9D8F';
   ctx.fillRect(0, 0, SIDE_W, SIDE_H);
-  for (let x = 0; x < COLUMN; x++ ) {
+  for (let x = 0; x < COL; x++ ) {
     for (let y = 0; y < ROW; y++) {
       drawBlock(x, y);
     }
