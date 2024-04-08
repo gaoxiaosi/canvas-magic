@@ -19,7 +19,7 @@
 
 `beta`：测试版，额外功能补充，一些其他想法。
 
-`plugin`：公共插件目录，目前只有弹窗，后续可能有按钮。
+`plugin`：公共插件目录，目前只有弹窗，后续看情况增加。
 
 `其他目录`：不用管，用于快速创建项目和打包构建，还有一些脚本。
 
@@ -38,8 +38,12 @@
 
 如果不嫌麻烦的话，帮忙点个`Star`，谢谢！
 
+### 在线网址
+https://gaoxiaosi.github.io/canvas-magic/
+
 ### 案例列表
 | 名称 | 说明 | 演示 | 代码 | 讲解 | 博客 |
 | :---: | :---: | :----: | :----: | :---: | :---:|
 |`gobang`|五子棋|[简单](https://gaoxiaosi.github.io/canvas-magic/alpha/gobang)、[标准](https://gaoxiaosi.github.io/canvas-magic/standard/gobang)、[测试](https://gaoxiaosi.github.io/canvas-magic/beta/gobang)|[简单](https://github.com/gaoxiaosi/canvas-magic/blob/main/alpha/gobang/index.js)、[标准](https://github.com/gaoxiaosi/canvas-magic/blob/main/standard/gobang/index.js)、[测试](https://github.com/gaoxiaosi/canvas-magic/blob/main/beta/gobang/index.js)| [视频](https://www.bilibili.com/video/BV1Px4y1D7Pi) | [文章](https://juejin.cn/post/7346419290199834650) |
 |`game2048`|2048|[简单](https://gaoxiaosi.github.io/canvas-magic/alpha/game2048)、[标准](https://gaoxiaosi.github.io/canvas-magic/standard/game2048)、[测试](https://gaoxiaosi.github.io/canvas-magic/beta/game2048)|[简单](https://github.com/gaoxiaosi/canvas-magic/blob/main/alpha/game2048/index.js)、[标准](https://github.com/gaoxiaosi/canvas-magic/blob/main/standard/game2048/index.js)、[测试](https://github.com/gaoxiaosi/canvas-magic/blob/main/beta/game2048/index.js)| [视频](https://www.bilibili.com/video/BV1JA4m1P7fM) | Todo |
+|`link`|连连看|[简单](https://gaoxiaosi.github.io/canvas-magic/alpha/link)、[标准](https://gaoxiaosi.github.io/canvas-magic/standard/link)、[测试](https://gaoxiaosi.github.io/canvas-magic/beta/link)|[简单](https://gaoxiaosi.github.io/canvas-magic/blob/main/alpha/link/index.js)、[标准](https://gaoxiaosi.github.io/canvas-magic/blob/main/standard/link/index.js)、[测试](https://gaoxiaosi.github.io/canvas-magic/blob/main/beta/link/index.js)| Todo | Todo |
