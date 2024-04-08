@@ -121,7 +121,6 @@ const scaleAnimate = (scaleGroup, staticScaleGroup, scaleFn, scaleRatio, duratio
     scaleGroup.forEach(({ x, y, val }) => drawDataBlock(x - ratio / 2, y - ratio / 2, val, W + W * ratio))
     elapsed = timestamp - start;
     if (elapsed < duration) { // 判断是否绘制完成
-      // scaleRatio = (1 - Math.abs(1 - elapsed / duration * 2)) * maxScaleRatio
       ratio = scaleFn(elapsed / duration, scaleRatio);
       requestAnimationFrame(draw);
     } else { // 绘制完成
@@ -137,18 +136,7 @@ const mergeScale = (progress, scaleRatio) => Math.sin(progress * Math.PI) * scal
 // 新出现方块的缩放变化，从小变到大
 const appearScale = (progress, scaleRatio) => - Math.cos(progress * Math.PI / 2) * (1 - scaleRatio);
 
-// 移动时数字的移动和合并
-// const move = list => {
-//   let result = list.filter(item => item !== -1);
-//   for (let i = result.length - 1; i > 0; i--) {
-//     if (result[i] === result[i - 1]) {
-//       maxVal = Math.max(maxVal, ++result[i]);
-//       result.splice(--i, 1); 
-//     }
-//   }
-//   return new Array(list.length - result.length).fill(-1).concat(result)
-// }
-
+// 移动合并
 const move = (list, index) => {
   let temp = [], isMerge = false, len = list.length, distance = 0;
   for (let i = len - 1; i >= 0; i--) {
@@ -211,16 +199,6 @@ const update = async () => {
 // 判断是否获胜
 const isWin = () => maxVal === VALUES.length - 1
 
-// const isLose = () => {
-//   for (let i = 0; i < COL; i++) {
-//     for (let j = 0; j < ROW; j++) {
-//       // 游戏未结束条件：1.本身是空值 2.下方没有相同值 3.右侧没有相同值
-//       if (data[i][j] === -1 || (j < ROW - 1 && data[i][j] === data[i][j + 1]) || (i < COL - 1 && data[i][j] === data[i + 1][j])) return false
-//     }
-//   }
-//   return true
-// }
-
 // 判断是否失败（页面上每次新增一个2或4时判断）
 const isLose = () => !data.some((col, x) => col.some((v, y) => v === -1 || v === col[y + 1] || v === data[x + 1]?.[y]))
 
@@ -243,17 +221,7 @@ const start = async () => {
     data[x][y] = val;
     scaleGroup.push({x, y, val});
   }
-  await scaleAnimate(scaleGroup, [], appearScale, APPEAR_SCALE_RATIO, APPEAR_SCALE_DURATION)
-  // 爱心的点位，记得将行和列改成5*5，在全局变量处改：ROW = 5, COL = 5
-  // let scaleGroup = [];
-  // let presets = [[1, 0], [0, 1], [0, 2], [1, 3], [2, 4], [3, 3], [4, 2], [4, 1], [3, 0], [2, 1]],
-  //   keys = [0, 6, 7, 3, 5, 8, 4, 2, 1, 9];
-  // presets.forEach(([x, y], index) => {
-  //   console.log(x, y, index)
-  //   data[x][y] = keys[index];
-  //   scaleGroup.push({ x, y, val: keys[index] })
-  // })
-  // await scaleAnimate(scaleGroup, [], appearScale, APPEAR_SCALE_RATIO, APPEAR_SCALE_DURATION)
+  await scaleAnimate(scaleGroup, [], appearScale, APPEAR_SCALE_RATIO, APPEAR_SCALE_DURATION);
   drawBoard();
   drawAllBlock(data);
 }
