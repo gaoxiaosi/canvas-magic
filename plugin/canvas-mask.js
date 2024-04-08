@@ -18,6 +18,7 @@ class Mask {
    * @param {string} options.cancelBtnText 取消按钮的文本
    */
   constructor({
+    isFullScreen,
     canvas,
     onSuccess,
     onCancel,
@@ -26,9 +27,15 @@ class Mask {
     btnTextColor = '#FFFFFF',
     textTitle = '游戏结束',
     successBtnText = '重新开始',
-    cancelBtnText = '取消'
+    cancelBtnText = '取消',
+    titleH = 50, // 标题的高度（字体大小）
+    titleBtnSpacing = 50, // 标题和按钮的间距
+    btnH = 40, // 按钮高度（包含padding）
+    btnPadding = 10, // 按钮的padding
+    btnSpacing = 40 // 按钮间距
   }) {
     Object.assign(this, {
+      isFullScreen: false,
       onSuccess, // 点击“成功”按钮，关闭模态窗，执行回调
       onCancel, // 点击“取消”按钮，关闭模态窗，执行回调
       primaryColor, // 主题颜色，用于字体、按钮颜色等
@@ -37,13 +44,13 @@ class Mask {
       textTitle, // 模态窗的标题
       successBtnText, // 成功按钮的文本
       cancelBtnText, // 取消按钮的文本
-      W: canvas.width, // 原canvas的宽，会创建一个临时的canvas覆盖在上面
-      H: canvas.height, // canvas的高，会创建一个临时的canvas覆盖在上面
-      titleH: 50, // 标题的高度（字体大小）
-      titleBtnSpacing: 50, // 标题和按钮的间距
-      btnH: 40, // 按钮高度（包含padding）
-      btnPadding: 10, // 按钮的padding
-      btnSpacing: 40 // 按钮间距
+      W: canvas?.width, // 原canvas的宽，会创建一个临时的canvas覆盖在上面
+      H: canvas?.height, // canvas的高，会创建一个临时的canvas覆盖在上面
+      titleH, // 标题的高度（字体大小）
+      titleBtnSpacing, // 标题和按钮的间距
+      btnH, // 按钮高度（包含padding）
+      btnPadding, // 按钮的padding
+      btnSpacing // 按钮间距
     })
 
     // 和原canvas大小位置都一样的新canvas
@@ -51,13 +58,21 @@ class Mask {
     this.canvas = document.createElement('canvas');
     this.ctx = this.canvas.getContext('2d');
     this.canvas.id = `mask-canvas-${new Date().getTime()}`;
-    this.canvas.width = this.W;
-    this.canvas.height = this.H;
-    // this.canvas.style.cssText = `position: absolute; top: ${top}px; left: ${left}px; cursor: pointer;`;
-    this.canvas.style.cssText = `position: absolute; inset: 0; margin: auto; cursor: pointer;`;
-    // 遮罩层Canvas和原Canvas为同级关系，所以添加到原Canvas后面，而不是document.body.appendChild(this.canvas)
-    canvas.parentNode.appendChild(this.canvas)
-
+    if (isFullScreen) {
+      this.canvas.width = window.innerWidth;
+      this.W = window.innerWidth;
+      this.canvas.height = window.innerHeight;
+      this.H = window.innerHeight;
+      this.canvas.style.cssText = `position: absolute; inset: 0; margin: auto; cursor: pointer;`;
+      document.body.appendChild(this.canvas)
+    } else {
+      this.canvas.width = this.W;
+      this.canvas.height = this.H;
+      // this.canvas.style.cssText = `position: absolute; top: ${top}px; left: ${left}px; cursor: pointer;`;
+      this.canvas.style.cssText = `position: absolute; inset: 0; margin: auto; cursor: pointer;`;
+      // 遮罩层Canvas和原Canvas为同级关系，所以添加到原Canvas后面，而不是document.body.appendChild(this.canvas)
+      canvas.parentNode.appendChild(this.canvas)
+    }
     this.drawMask(); // 绘制遮罩层
     this.drawTitle(); // 绘制标题
     this.drawButtons(); // 绘制按钮，绑定遮罩层点击事件，判断是否点击到成功或取消按钮，执行相应回调
