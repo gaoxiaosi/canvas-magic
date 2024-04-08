@@ -113,7 +113,7 @@ const drawTitle = () => {
   ctx.textBaseline = 'middle';
   ctx.textAlign = 'left'
   ctx.fillStyle = PRIMARY_COLOR;
-  ctx.fillText(TITEL, start + TITLE_H + SPACE, TITLE_H / 2)
+  ctx.fillText(TITEL, start + TITLE_H + SPACE, TITLE_H / 2);
 }
 
 // 启动
@@ -157,7 +157,7 @@ const handleResize = () => {
 }
 
 // 鼠标在canvas上移动时回调（处理）
-const handleMoveOnCanvas = e => canvas.style.cursor = getType(e.offsetX, y = e.offsetY)['type'] ? 'pointer' : 'auto'
+const handleMoveOnCanvas = e => canvas.style.cursor = getType(e.offsetX, e.offsetY)['type'] ? 'pointer' : 'auto'
 
 window.onresize = debounce(handleResize, DEBOUNCE_DURATION)
 
