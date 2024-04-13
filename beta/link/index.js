@@ -41,7 +41,7 @@ const DPR = window.devicePixelRatio || 1,
   VALUE_COLORS = ['#409EFF', '#67C23A', '#E6A23C', '#F56C6C', '#B37FEB', '#FF85C0', '#36CFC9'],
   FOCUS_COLOR = '#00AEEC',
   LINE_COLOR = '#00AEEC',
-  TITLE_FONT_COLOR = '#00AEEC',
+  TITLE_FONT_COLOR = '#00AEEC';
   BG_COLOR = '#F8BBD0',
   CONNECT_DURATION = 369,
   SHOW_TIPS_DURATION = 10000,
@@ -321,7 +321,7 @@ const paint = () => {
 
 const restart = () => {
   s1 = { x: -1, y: -1 },
-  s4 = { x: -1, y: -1 },
+  s2 = { x: -1, y: -1 },
   steps = 0,
   timer = null,
   isAutoPlay = false,
