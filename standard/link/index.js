@@ -88,7 +88,7 @@ const checkAll = (p1, p4) => {
       p2 = { x: x2, y: y2 };
       p3 = dx === 0 ? { x: x4, y: y2 } : { x: x2, y: y4 };
       // 拐1次弯
-      if (JSON.stringify(p3) === JSON.stringify(p4) && checkLine(p2, p4)) return true
+      if ((p3.x === x4 && p3.y === y4) && checkLine(p2, p4)) return true
       // 拐2次弯
       if (data[p3.x][p3.y] === -1 && checkLine(p2, p3) && checkLine(p3, p4)) return true
     }

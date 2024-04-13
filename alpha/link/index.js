@@ -21,12 +21,9 @@ document.body.appendChild(canvas);
 document.body.style.backgroundColor = BG_COLOR;
 
 let data = Array.from({ length: COL + 2 }, () => Array(ROW + 2).fill(-1)),
-  p1 = { x: -1, y: -1 },
-  p2 = { x: -1, y: -1 },
-  p3 = { x: -1, y: -1 },
-  p4 = { x: -1, y: -1 },
+  s1 = { x: -1, y: -1 },
+  s4 = { x: -1, y: -1 },
   steps = 0;
-
 
 canvas.onclick = e => {
   let [x, y] = [e.offsetX, e.offsetY].map(p => Math.ceil((p - BORDER) / (W + SPACE)))
@@ -35,28 +32,28 @@ canvas.onclick = e => {
   if (data[x][y] === -1) return;
   // console.log(x, y)
   addFocus(x, y);
-  let x1 = p1.x, y1 = p1.y;
+  let x1 = s1.x, y1 = s1.y;
   if (x1 === -1 && y1 === -1) {
-    p1 = { x, y };
+    s1 = { x, y };
   } else {
     if (x1 === x && y1 === y) {
-      p1 = { x: -1, y: -1 }
+      s1 = { x: -1, y: -1 }
       clearFocus(x, y);
       return;
     }
-    p4 = { x, y };
-    if (check(p1, p4)) {
+    s4 = { x, y };
+    if (check(s1, s4)) {
       data[x1][y1] = -1;
       data[x][y] = -1;
-      p1 = { x: -1, y: -1 };
-      p4 = { x: -1, y: -1 };
+      s1 = { x: -1, y: -1 };
+      s4 = { x: -1, y: -1 };
       steps++;
       paint();
       isWin() && alert('游戏结束，你赢了');
     } else {
       clearFocus(x1, y1);
-      p1 = { x, y };
-      p4 = { x: -1, y: -1 };
+      s1 = { x, y };
+      s4 = { x: -1, y: -1 };
     }
   }
 }
@@ -78,12 +75,12 @@ const checkLine = (p1, p4) => {
 const checkAll = (p1, p4) => {
   let { x: x1, y: y1 } = p1, { x: x4, y: y4 } = p4;
   for (let [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
-    let i = 0, x2 = x1, y2 = y1;
+    let i = 0, x2 = x1, y2 = y1, p2 = {}, p3 = {};
     while (data[x2 = x1 + dx * ++i]?.[y2 = y1 + dy * i] === -1) {
       p2 = { x: x2, y: y2 };
       p3 = dx === 0 ? { x: x4, y: y2 } : { x: x2, y: y4 };
       // 拐1次弯
-      if (JSON.stringify(p3) === JSON.stringify(p4) && checkLine(p2, p4)) return true
+      if ((p3.x === x4 && p3.y === y4) && checkLine(p2, p4)) return true
       // 拐2次弯
       if (data[p3.x][p3.y] === -1 && checkLine(p2, p3) && checkLine(p3, p4)) return true
     }
@@ -92,8 +89,6 @@ const checkAll = (p1, p4) => {
 }
 
 const check = (p1, p4) => {
-  p2 = p1;
-  p3 = p4;
   if (data[p1.x][p1.y] !== data[p4.x][p4.y]) return false
   // 在同一条直线上
   if (checkLine(p1, p4)) return true;
