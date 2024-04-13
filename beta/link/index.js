@@ -320,13 +320,10 @@ const paint = () => {
 }
 
 const restart = () => {
-  p1 = { x: -1, y: -1 },
-  p2 = { x: -1, y: -1 },
-  p3 = { x: -1, y: -1 },
-  p4 = { x: -1, y: -1 },
+  s1 = { x: -1, y: -1 },
+  s4 = { x: -1, y: -1 },
   steps = 0,
   timer = null,
-  touchTimer = null,
   isAutoPlay = false,
   isOver = false,
   showTipsCount = 0, // 记录打乱数据的次数，避免出现死循环
