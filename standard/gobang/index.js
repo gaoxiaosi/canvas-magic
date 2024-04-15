@@ -91,15 +91,23 @@ const restart = () => {
 const over = textTitle => new Mask({canvas, onSuccess: restart, primaryColor: BOARD_BG_COLOR, textTitle})
 
 // 判断游戏胜负，(x, y)当前下棋坐标，role：黑1白2，chess：棋盘信息
-const isWin = (x, y, role, chess) => {
-  for (let [dx, dy] of [[1, 0], [0, 1], [1, 1], [1, -1]]) {
-    let count = 1, i = 0, j = 0;  // count：连续同种颜色棋子数
-    // 判断：1、坐标是否越界 2、该位置的值是否一致（都是黑或白） 3、累计的次数是否达到5
-    while(count < 5 && chess[x + dx * ++i]?.[y + dy * i] === role) count++
-    while(count < 5 && chess[x - dx * ++j]?.[y - dy * j] === role) count++
-    if (count === 5) return i = 4 - j, drawLine(x + dx * i, y + dy * i, x - dx * j, y - dy * j, WIN_LINE_WIDTH, WIN_LINE_COLOR), true
-  }
-  return false
-}
+// const isWin = (x, y, role, chess) => {
+//   for (let [dx, dy] of [[1, 0], [0, 1], [1, 1], [1, -1]]) {
+//     let count = 1, i = 0, j = 0;  // count：连续同种颜色棋子数
+//     // 判断：1、坐标是否越界 2、该位置的值是否一致（都是黑或白） 3、累计的次数是否达到5
+//     while(count < 5 && chess[x + dx * ++i]?.[y + dy * i] === role) count++
+//     while(count < 5 && chess[x - dx * ++j]?.[y - dy * j] === role) count++
+//     if (count === 5) return i = 4 - j, drawLine(x + dx * i, y + dy * i, x - dx * j, y - dy * j, WIN_LINE_WIDTH, WIN_LINE_COLOR), true
+//   }
+//   return false
+// }
+
+// 判断游戏胜负，(x, y)当前下棋坐标，role：黑1白2，chess：棋盘信息
+const isWin = (x, y, role, chess) => [[1, 0], [0, 1], [1, 1], [1, -1]].some(([dx, dy]) => {
+  let count = 1, i = 0, j = 0;
+  while(count < 5 && chess[x + dx * ++i]?.[y + dy * i] === role) count++
+  while(count < 5 && chess[x - dx * ++j]?.[y - dy * j] === role) count++
+  return count === 5 ? (i = 4 -j, drawLine(x + dx * i, y + dy * i, x - dx * j, y - dy * j, WIN_LINE_WIDTH, WIN_LINE_COLOR), true) : false
+})
 
 window.onload = drawBoard

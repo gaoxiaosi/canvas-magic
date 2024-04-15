@@ -53,7 +53,7 @@ const drawPiece = (x, y, isBlack) => {
   ctx.fill();
 }
 
-// 判断游戏胜负，(x, y)当前下棋坐标，role：黑1白2，chess：棋盘数据，二维数组，黑1白2空位-1
+// V1：判断游戏胜负，(x, y)当前下棋坐标，role：黑1白2，chess：棋盘数据，二维数组，黑1白2空位-1
 // const isWin = (x, y, role, chess) => {
 //   for (let [dx, dy] of [[1, 0], [0, 1], [1, 1], [1, -1]]) {
 //     let count = 1, i = 0, j = 0;
@@ -64,11 +64,12 @@ const drawPiece = (x, y, isBlack) => {
 //   return false
 // }
 
+// V2：使用some方法再次简化
 const isWin = (x, y, role, chess) => [[1, 0], [0, 1], [1, 1], [1, -1]].some(([dx, dy]) => {
   let count = 1, i = 0, j = 0;
   while(count < 5 && chess[x + dx * ++i]?.[y + dy * i] === role) count++
   while(count < 5 && chess[x - dx * ++j]?.[y - dy * j] === role) count++
-  if (count === 5) return true
+  return count === 5
 })
 
 window.onload = drawBoard
