@@ -107,7 +107,7 @@ const isWin = (x, y, role, chess) => [[1, 0], [0, 1], [1, 1], [1, -1]].some(([dx
   let count = 1, i = 0, j = 0;
   while(count < 5 && chess[x + dx * ++i]?.[y + dy * i] === role) count++
   while(count < 5 && chess[x - dx * ++j]?.[y - dy * j] === role) count++
-  return count === 5 ? (i = 4 -j, drawLine(x + dx * i, y + dy * i, x - dx * j, y - dy * j, WIN_LINE_WIDTH, WIN_LINE_COLOR), true) : false
+  return count === 5 && (i = 4 -j, drawLine(x + dx * i, y + dy * i, x - dx * j, y - dy * j, WIN_LINE_WIDTH, WIN_LINE_COLOR), true)
 })
 
 window.onload = drawBoard
