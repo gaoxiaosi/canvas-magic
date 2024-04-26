@@ -231,10 +231,10 @@ const initData = () => {
     num = i % VALUES.length;
     arr.push(num, num);
   }
-  let randomArr = shuffle(arr);
+  arr = shuffle(arr);
   for (let x = 1; x < COL + 1; x++) {
     for (let y = 1; y < ROW + 1; y++) {
-      data[x][y] = randomArr.pop();
+      data[x][y] = arr.pop();
     }
   }
 }
@@ -248,10 +248,10 @@ const shuffleData = () => {
       arr.push(data[x][y]);
     }
   }
-  let randomArr = shuffle(arr);
+  arr = shuffle(arr);
   for (let x = 1; x < COL + 1; x++) {
     for (let y = 1; y < ROW + 1; y++) {
-      data[x][y] = randomArr.pop();
+      data[x][y] = arr.pop();
     }
   }
 }
