@@ -22,7 +22,7 @@ document.body.style.backgroundColor = BG_COLOR;
 
 let data = Array.from({ length: COL + 2 }, () => Array(ROW + 2).fill(-1)),
   s1 = { x: -1, y: -1 },
-  s4 = { x: -1, y: -1 },
+  s2 = { x: -1, y: -1 },
   steps = 0;
 
 canvas.onclick = e => {
@@ -41,19 +41,19 @@ canvas.onclick = e => {
       clearFocus(x, y);
       return;
     }
-    s4 = { x, y };
-    if (check(s1, s4)) {
+    s2 = { x, y };
+    if (check(s1, s2)) {
       data[x1][y1] = -1;
       data[x][y] = -1;
       s1 = { x: -1, y: -1 };
-      s4 = { x: -1, y: -1 };
+      s2 = { x: -1, y: -1 };
       steps++;
       paint();
       isWin() && alert('游戏结束，你赢了');
     } else {
       clearFocus(x1, y1);
       s1 = { x, y };
-      s4 = { x: -1, y: -1 };
+      s2 = { x: -1, y: -1 };
     }
   }
 }

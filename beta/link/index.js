@@ -21,6 +21,7 @@ import img18 from './18.jpg'
 import img19 from './19.jpg'
 import img20 from './20.jpg'
 
+// 获取行数（列数尽可能占满），行列至少有一个为偶数，才能保证总数为偶数，最终两两消除完毕
 const getRow = (row, col) => (col % 2 && row % 2) ? row - 1 : row
 
 const isMobile = () => window.innerWidth < 768
@@ -29,7 +30,7 @@ const DPR = window.devicePixelRatio || 1,
   W = isMobile() ? 60 : 100,
   LINE_WIDTH = W / 12, // 连线的宽度
   FOCUS_LINE_WIDTH = W / 12, // 选中时边框宽度
-  BORDER = W / 2 + LINE_WIDTH, // 预留连线的空间，至少大于 W / 2
+  BORDER = W / 2 + LINE_WIDTH, // 预留连线的空间，至少大于 LINE_WIDTH / 2
   SPACE = 10 / DPR,
   COL = Math.floor((window.innerWidth - BORDER * 2 - SPACE) / (W + SPACE)), // 行列至少有一个为偶数，才能保证总数是偶数
   ROW = getRow(Math.floor((window.innerHeight - BORDER * 2 - SPACE) / (W + SPACE)), COL),
@@ -69,8 +70,7 @@ let data = Array.from({ length: COL + 2 }, () => Array(ROW + 2).fill(-1)),
   tipsPoints = [],
   steps = 0,
   timer = null,
-  isAutoPlay = false,
-  isOver = false,
+  isAutoPlay = false, // 防止重复执行自动玩方法
   showTipsCount = 0, // 记录打乱数据的次数，避免出现死循环
   images = [], // 图片对象
   isLoadeds = new Array(VALUES.length).fill(false); // 记录图片是否加载完毕
@@ -88,7 +88,7 @@ const autoPlay = async () => {
   steps++;
   await sleep(CONNECT_DURATION);
   paint();
-  isOver ? over() : autoPlay();
+  isWin() ? over() : autoPlay();
 }
 
 canvas.onclick = async e => {
@@ -117,7 +117,7 @@ canvas.onclick = async e => {
       steps++;
       await sleep(CONNECT_DURATION);
       paint();
-      isOver && over();
+      isWin() && over();
     } else {
       clearFocus(x1, y1);
       s1 = { x, y };
@@ -128,7 +128,7 @@ canvas.onclick = async e => {
 
 const sleep = t => new Promise(resolve => setTimeout(resolve, t))
 
-const isWin = () => steps * 2 === ROW * COL && (isOver = true)
+const isWin = () => steps * 2 === ROW * COL
 
 const over = () => new Mask({
   onSuccess: restart,
@@ -195,7 +195,6 @@ const showTips = () => {
     alert('未知错误，请重新刷新页面');
     return true;
   }
-  if (isOver) return false;
   let obj = {}
   data.forEach((col, x) => col.forEach((v, y) => v !== - 1 && obj[v] ? obj[v].push({ x, y }) : obj[v] = [{ x, y }]))
   // console.log(obj)
@@ -219,11 +218,6 @@ const addFocus = (x, y, focusColor = FOCUS_COLOR) => {
 }
 
 const clearFocus = (x, y) => drawBlock(x, y, data[x][y])
-
-const drawBoard = () => {
-  ctx.fillStyle = BG_COLOR;
-  ctx.fillRect(BORDER, BORDER, SIDE_W - BORDER * 2, SIDE_H - BORDER * 2)
-}
 
 // 坐标转换
 const trans = p => (p - 1) * (W + SPACE) + SPACE + BORDER
@@ -315,8 +309,11 @@ const paint = () => {
     }, SHOW_TIPS_DURATION);
   }
   ctx.clearRect(0, 0, SIDE_W, SIDE_H);
-  drawBoard();
-  data.forEach((col, x) => col.forEach((v, y) => v !== -1 && drawBlock(x, y, v)))
+  for (let x = 1; x < COL + 1; x++) {
+    for (let y = 1; y < ROW + 1; y++) {
+      data[x][y] !== -1 && drawBlock(x, y, data[x][y]);
+    }
+  }
 }
 
 const restart = () => {
@@ -325,7 +322,6 @@ const restart = () => {
   steps = 0,
   timer = null,
   isAutoPlay = false,
-  isOver = false,
   showTipsCount = 0, // 记录打乱数据的次数，避免出现死循环
   initData();
   paint();
@@ -340,7 +336,11 @@ const start = async () => {
     images[index] = img;
     img.onload = () => {
       isLoadeds[index] = true;
-      data.forEach((col, x) => col.forEach((v, y) => v !== -1 && drawBlock(x, y, v)))
+      for (let x = 1; x < COL + 1; x++) {
+        for (let y = 1; y < ROW + 1; y++) {
+          data[x][y] === index && drawBlock(x, y, data[x][y]);
+        }
+      }
     }
   })
   paint();
