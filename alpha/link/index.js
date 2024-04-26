@@ -103,14 +103,7 @@ const addFocus = (x, y, focusColor = FOCUS_COLOR) => {
   ctx.strokeRect(trans(x) + w / 2, trans(y) + w / 2, W - w, W - w);
 }
 
-const clearFocus = (x, y) => {
-  drawBlock(x, y, data[x][y]);
-}
-
-const drawBoard = () => {
-  ctx.fillStyle = BG_COLOR;
-  ctx.fillRect(BORDER, BORDER, SIDE_W - BORDER * 2, SIDE_H - BORDER * 2)
-}
+const clearFocus = (x, y) => drawBlock(x, y, data[x][y])
 
 // 坐标转换
 const trans = p => (p - 1) * (W + SPACE) + SPACE + BORDER
@@ -124,10 +117,10 @@ const initData = () => {
     num = i % VALUES.length;
     arr.push(num, num);
   }
-  let randomArr = shuffle(arr);
+  arr = shuffle(arr);
   for (let x = 1; x < COL + 1; x++) {
     for (let y = 1; y < ROW + 1; y++) {
-      data[x][y] = randomArr.pop();
+      data[x][y] = arr.pop();
     }
   }
 }
@@ -146,8 +139,11 @@ const drawBlock = (x, y, valIndex, w = W) => {
 
 const paint = () => {
   ctx.clearRect(0, 0, SIDE_W, SIDE_H);
-  drawBoard();
-  data.forEach((col, x) => col.forEach((v, y) => v !== -1 && drawBlock(x, y, v)));
+  for (let x = 1; x < COL + 1; x++) {
+    for (let y = 1; y < ROW + 1; y++) {
+      data[x][y] !== -1 && drawBlock(x, y, data[x][y]);
+    }
+  }
 }
 
 const start = async () => {

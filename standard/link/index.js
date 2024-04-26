@@ -1,6 +1,6 @@
 const W = 100,
   FOCUS_LINE_WIDTH = W / 12, // 选中时边框宽度
-  BORDER = W / 2, // 预留连线的空间，至少大于 W / 2
+  BORDER = W / 2 + FOCUS_LINE_WIDTH, // 预留连线的空间，至少大于 FOCUS_LINE_WIDTH / 2
   SPACE = 10,
   COL = 6, // 行列至少有一个为偶数，才能保证总数是偶数
   ROW = 6,
@@ -44,8 +44,9 @@ canvas.onclick = async e => {
       return;
     }
     s4 = { x, y };
-    if (check(s1, s4)) {
-      drawLine();
+    let points = []
+    if (points = check(s1, s4)) {
+      drawLine(points);
       data[x1][y1] = -1;
       data[x][y] = -1;
       s1 = { x: -1, y: -1 };
@@ -86,9 +87,9 @@ const checkAll = (p1, p4) => {
       p2 = { x: x2, y: y2 };
       p3 = dx === 0 ? { x: x4, y: y2 } : { x: x2, y: y4 };
       // 拐1次弯
-      if ((p3.x === x4 && p3.y === y4) && checkLine(p2, p4)) return true
+      if ((p3.x === x4 && p3.y === y4) && checkLine(p2, p4)) return [p1, p2, p4]
       // 拐2次弯
-      if (data[p3.x][p3.y] === -1 && checkLine(p2, p3) && checkLine(p3, p4)) return true
+      if (data[p3.x][p3.y] === -1 && checkLine(p2, p3) && checkLine(p3, p4)) return [p1, p2, p3, p4]
     }
   }
   return false
@@ -97,7 +98,7 @@ const checkAll = (p1, p4) => {
 const check = (p1, p4) => {
   if (data[p1.x][p1.y] !== data[p4.x][p4.y]) return false
   // 在同一条直线上
-  if (checkLine(p1, p4)) return true;
+  if (checkLine(p1, p4)) return [p1, p4];
   // 1次拐弯或2次拐弯
   return checkAll(p1, p4)
 }
@@ -134,42 +135,8 @@ const drawLine = (points, lineWidth = FOCUS_LINE_WIDTH, lineColor = FOCUS_COLOR)
   ctx.stroke();
 }
 
-const drawBoard = () => {
-  ctx.fillStyle = BG_COLOR;
-  ctx.fillRect(BORDER, BORDER, SIDE_W - BORDER * 2, SIDE_H - BORDER * 2)
-}
-
 // 坐标转换
 const trans = p => (p - 1) * (W + SPACE) + SPACE + BORDER
-
-// const showTips = () => {
-//   if (showTipsCount++ > 1000) {
-//     alert('未知错误，请重新刷新页面');
-//     return true;
-//   }
-//   if (isOver) return false;
-//   let obj = {}
-//   data.forEach((col, x) => col.forEach((v, y) => {
-//     if (v === -1) return;
-//     obj[v] ? obj[v].push({ x, y }) : obj[v] = [{ x, y }]
-//   }))
-//   // console.log(obj)
-//   // console.log(Object.values(obj))
-//   for (let list of Object.values(obj)) {
-//     // console.log(list)
-//     for (let i = 0; i < list.length; i++) {
-//       for (let j = i + 1; j < list.length; j++) {
-//         // console.log(list[i], list[j])
-//         if (check(list[i], list[j])) {
-//           t1 = list[i];
-//           t4 = list[j];
-//           return true
-//         }
-//       }
-//     }
-//   }
-//   return false;
-// }
 
 // 洗牌（打乱数组的顺序）
 const shuffle = arr => arr.sort(() => Math.random() - 0.5)
@@ -180,10 +147,10 @@ const initData = () => {
     num = i % VALUES.length;
     arr.push(num, num);
   }
-  let randomArr = shuffle(arr);
+  arr = shuffle(arr);
   for (let x = 1; x < COL + 1; x++) {
     for (let y = 1; y < ROW + 1; y++) {
-      data[x][y] = randomArr.pop();
+      data[x][y] = arr.pop();
     }
   }
 }
@@ -202,8 +169,11 @@ const drawBlock = (x, y, valIndex, w = W) => {
 
 const paint = () => {
   ctx.clearRect(0, 0, SIDE_W, SIDE_H);
-  drawBoard();
-  data.forEach((col, x) => col.forEach((v, y) => v !== -1 && drawBlock(x, y, v)));
+  for (let x = 1; x < COL + 1; x++) {
+    for (let y = 1; y < ROW + 1; y++) {
+      data[x][y] !== -1 && drawBlock(x, y, data[x][y]);
+    }
+  }
 }
 
 const start = async () => {
