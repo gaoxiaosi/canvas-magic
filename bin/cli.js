@@ -9,4 +9,12 @@ program.command('create')
     require('../lib/create')(filePath, name)
   })
 
+program.command('open')
+  .alias('o')
+  .description('打开指定版本的小游戏')
+  .arguments('<name> <version> [version]')
+  .action((name, version, port) => {
+    require('../lib/open')(name, version, port)
+})
+
 program.parse(process.argv);
