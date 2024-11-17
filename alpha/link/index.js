@@ -111,6 +111,9 @@ const trans = p => (p - 1) * (W + SPACE) + SPACE + BORDER
 // 洗牌（打乱数组的顺序）
 const shuffle = arr => arr.sort(() => Math.random() - 0.5)
 
+// 初始化数据，
+// 1. 按顺序取数字，每次取两个相同的（保证最终消除完毕）
+// 2. 将数据打乱顺序，塞入到我们的二维数组中
 const initData = () => {
   let arr = [], num = 0;
   for (let i = 0; i < ROW * COL / 2; i++) {
@@ -125,6 +128,7 @@ const initData = () => {
   }
 }
 
+// 绘制单个格子
 const drawBlock = (x, y, valIndex, w = W) => {
   x = trans(x);
   y = trans(y);
@@ -137,6 +141,7 @@ const drawBlock = (x, y, valIndex, w = W) => {
   ctx.fillText(VALUES[valIndex], x + w / 2, y + w / 2);
 }
 
+// 绘制全部的格子
 const paint = () => {
   ctx.clearRect(0, 0, SIDE_W, SIDE_H);
   for (let x = 1; x < COL + 1; x++) {
