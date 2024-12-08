@@ -5,9 +5,9 @@
   <img src="https://img.shields.io/badge/ES6-1289FF?logo=bilibili&logoColor=FFFFFF&&style=for-the-badge" />
   <img src="https://img.shields.io/badge/pack-Parcel-B07E52?logo=webpack&logoColor=B07E52&&style=for-the-badge" />
   <img src="https://img.shields.io/github/stars/gaoxiaosi/canvas-magic?style=for-the-badge" />
-  <img src="https://img.shields.io/github/last-commit/gaoxiaosi/canvas-magic/main?logo=git&&logoColor=37B110&&style=for-the-badge" />
-  <img src="https://img.shields.io/github/package-json/v/gaoxiaosi/canvas-magic?logo=vimeo&logoColor=E6632D&&style=for-the-badge" />
+  <!-- <img src="https://img.shields.io/github/package-json/v/gaoxiaosi/canvas-magic?logo=vimeo&logoColor=E6632D&&style=for-the-badge" /> -->
   <img src="https://img.shields.io/github/license/gaoxiaosi/canvas-magic?logo=opencollective&logoColor=7EB30B&&style=for-the-badge" />
+  <img src="https://img.shields.io/github/last-commit/gaoxiaosi/canvas-magic/main?logo=git&&logoColor=37B110&&style=for-the-badge" />
 </p>
 
 <h2 align=center>Canvas + ES6 实现经典小游戏和案例</h2>
